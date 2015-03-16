@@ -40,7 +40,11 @@ It's done.
 
 Basic usage
 -----------
-First, you can skip this part if you are good at using xposed. Because the usage is basically similar as xposed.
+First,you can skip this part if you are good at using xposed. Because the usage is basically similar as xposed.
+
+It's easy to understand how to use it. Just show two samples:
+
+Sample one
 
 		//The first argument is the patching class,
 		//and the second is the patching method name, and the following arguments are the patching method' arguments type class.
