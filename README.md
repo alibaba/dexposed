@@ -84,7 +84,7 @@ Sample Two: Replace the original method.
 			@Override
 			protected Object replaceHookedMethod(MethodHookParam arg0)
 					throws Throwable {
-				// You can to run own logic to replace the whole original method	
+				// Just add logic as replacement
 				........
 			}
 
