@@ -27,9 +27,10 @@ Insert the following line into the initialization phase of your app, as early as
 
     public class MyApplication extends Application {
 
-        @Override public void onCreate() {
-            Dexposed.init();
-            ...
+        public static boolean isSupport = false;
+        @Override public void onCreate() {        
+            // check device if support and auto load libs
+            isSupport = XposedBridge.canDexposed(this);
         }
 
         ...
