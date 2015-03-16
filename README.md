@@ -40,7 +40,31 @@ It's done.
 
 Basic usage
 -----------
-(TODO)
+First, you can skip this part if you are good at using xposed. Because the usage is basically similar as xposed.
+
+		//The first argument is the patching class,
+		//and the second is the patching method name, and the following arguments are the patching method' arguments type class.
+		//The last argument is the instance of XC_MethodHook or XC_MethodReplacement
+		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class,
+				new XC_MethodHook() {
+                    // Add the logic before Activity.oncreate method.
+					protected void beforeHookedMethod(MethodHookParam param)
+							throws Throwable {
+						//param.thisObject is the instance of the hook class.
+						Activity instance = (Activity) param.thisObject;
+						
+						//The args[] is an array include all method arguments with the same index.
+						Bundle bundle = (Bundle) param.args[0];
+						Intent intent = new Intent();
+						// With XposedHelpers, it can reflect/invoke any field/method.	
+						XposedHelpers.setObjectField(param.thisObject, "mIntent", intent);
+					    
+						// Just call param.setResult If you want to just run before method and not continue to run original method.
+						if (bundle.containsKey("return")) {
+							param.setResult(null);
+						}
+					}
+				});
 
 Contribute
 ----------
