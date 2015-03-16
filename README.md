@@ -44,9 +44,9 @@ First,you can skip this part if you are good at using xposed. Because the usage 
 
 It's easy to understand how to use it. Just show two samples:
 
-Sample one
+Sample One: Add logic before and after the Activity.onCreate(Bundle);
 
-		//The first argument is the patching class,
+	//The first argument is the patching class,
 		//and the second is the patching method name, and the following arguments are the patching method' arguments type class.
 		//The last argument is the instance of XC_MethodHook or XC_MethodReplacement
 		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class,
@@ -68,7 +68,27 @@ Sample one
 							param.setResult(null);
 						}
 					}
+					
+					// Add the logic after Activity.oncreate method.
+					@Override
+					protected void afterHookedMethod(MethodHookParam param)
+							throws Throwable {
+						XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
+					}
 				});
+				
+Sampel Two: Replace the original method¡£
+
+		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class, new XC_MethodReplacement() {
+			// Replace original method
+			@Override
+			protected Object replaceHookedMethod(MethodHookParam arg0)
+					throws Throwable {
+				// You can to run own logic to replace the whole original method	
+				........
+			}
+
+		});
 
 Contribute
 ----------
