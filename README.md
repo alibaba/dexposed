@@ -77,7 +77,7 @@ Sample One: Add logic before and after the Activity.onCreate(Bundle);
 					}
 				});
 				
-Sampel Two: Replace the original method¡£
+Sampel Two: Replace the original method.
 
 		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class, new XC_MethodReplacement() {
 			// Replace original method
