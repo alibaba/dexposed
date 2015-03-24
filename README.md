@@ -1,7 +1,7 @@
 What is it?
 -----------
 Dexposed is a powerful yet non-invasive runtime [AOP (Aspect-oriented Programming)](http://en.wikipedia.org/wiki/Aspect-oriented_programming) framework
-for Android app development.
+for Android app development, based on the work of open-source [Xposed](https://github.com/rovo89/Xposed) [framework](https://github.com/rovo89/XposedBridge) project.
 
 The AOP of Dexposed is implemented purely non-invasive, without any annotation processor,
 weaver or bytecode rewriter. The integration is as simple as loading a small JNI library
@@ -14,7 +14,7 @@ developers heavily rely on the fragmented old versions of Android platform (SDK)
 Together with dynamic class loading, a small piece of compiled Java AOP code can be loaded
 into the running app, effectively altering the behavior of the target app without restart.
 
-Typcial use-cases
+Typical use-cases
 -----------------
 * Classic AOP programming
 * Instrumentation (for testing, performance monitoring and etc.)
@@ -76,7 +76,7 @@ Example 2: Replace the original body of the target method.
 		XposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
 		
 			@Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-				// Re-write the method logic outside the original method context is a bit tricky but still viable.
+				// Re-writing the method logic outside the original method context is a bit tricky but still viable.
 				...
 			}
 
