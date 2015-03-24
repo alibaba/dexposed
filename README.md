@@ -27,12 +27,13 @@ Insert the following line into the initialization phase of your app, as early as
 
     public class MyApplication extends Application {
 
-        public static boolean isSupport = false;
         @Override public void onCreate() {        
-            // check device if support and auto load libs
-            isSupport = XposedBridge.canDexposed(this);
+            // Check whether current device is supported (also initialize Dexposed framework if not yet)
+            if (XposedBridge.canDexposed(this)) {
+                // Use Dexposed to kick off AOP stuffs.
+                ...
+            }
         }
-
         ...
     }
 
@@ -41,55 +42,47 @@ It's done.
 Basic usage
 -----------
 
-It's easy to understand how to use it. Just show two samples:
+There are three injection points for a given method: *before*, *after*, *replace*.
 
-Sample One: Add logic before and after the Activity.onCreate(Bundle);
+Example 1: Attach a piece of code before and after all occurrences of `Activity.onCreate(Bundle)`.
 
-	    //The first argument is the target class,
-		//and the second is the AOP method name, and the following arguments are the method' arguments type class.
-		//The last argument is the instance of XC_MethodHook or XC_MethodReplacement
-		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class,
-				new XC_MethodHook() {
-                    // Add the logic before Activity.oncreate method.
-					protected void beforeHookedMethod(MethodHookParam param)
-							throws Throwable {
-						//param.thisObject is the instance of the target class.
-						Activity instance = (Activity) param.thisObject;
-						
-						//The args[] is an array include all method arguments with the same index.
-						Bundle bundle = (Bundle) param.args[0];
-						Intent intent = new Intent();
-						// With XposedHelpers, it can reflect/invoke any field/method.	
-						XposedHelpers.setObjectField(param.thisObject, "mIntent", intent);
-					    
-						// Just call param.setResult If not continue to run original method.
-						if (bundle.containsKey("return")) {
-							param.setResult(null);
-						}
-					}
+        // Target class, method with parameter types, followed by the hook callback (XC_MethodHook).
+		XposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+        
+            // To be invoked before Activity.onCreate().
+			@Override protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+				// "thisObject" keeps the reference to the instance of target class.
+				Activity instance = (Activity) param.thisObject;
+        
+				// The array args include all the parameters.
+				Bundle bundle = (Bundle) param.args[0];
+				Intent intent = new Intent();
+				// XposedHelpers provide useful utility methods.
+				XposedHelpers.setObjectField(param.thisObject, "mIntent", intent);
+		
+				// Calling setResult() will bypass the original method body use the result as method return value directly.
+				if (bundle.containsKey("return"))
+					param.setResult(null);
+			}
 					
-					// Add the logic after Activity.oncreate method.
-					@Override
-					protected void afterHookedMethod(MethodHookParam param)
-							throws Throwable {
-						XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
-					}
-				});
+			// To be invoked after Activity.onCreate()
+			@Override protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+		        XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
+			}
+		});
 				
-Sample Two: Replace the original method.
+Example 2: Replace the original body of the target method.
 
-		XposedBridge.findAndHookMethod(Activity.class, "oncreate", Bundle.class, new XC_MethodReplacement() {
-			// Replace original method
-			@Override
-			protected Object replaceHookedMethod(MethodHookParam arg0)
-					throws Throwable {
-				// Just add logic as replacement
-				........
+		XposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
+		
+			@Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+				// Re-write the method logic outside the original method context is a bit tricky but still viable.
+				...
 			}
 
 		});
 		
-You can check the dexposedexample project to find more samples. 
+Checkout the `example` project to find out more.
 
 Contribute
 ----------
