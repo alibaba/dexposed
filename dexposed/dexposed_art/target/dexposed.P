@@ -1,7 +1,7 @@
-out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/xposed.o: \
- frameworks/base/cmds/dexposed/xposed.cpp \
+out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/dexposed.o: \
+ frameworks/base/cmds/dexposed_art/dexposed.cpp \
  build/core/combo/include/arch/linux-arm/AndroidConfig.h \
- frameworks/base/cmds/dexposed/xposed.h \
+ frameworks/base/cmds/dexposed_art/dexposed.h \
  libnativehelper/include/nativehelper/jni.h \
  prebuilts/gcc/darwin-x86/arm/arm-linux-androideabi-4.8/bin/../lib/gcc/arm-linux-androideabi/4.8/include/stdarg.h \
  bionic/libc/include/stdint.h \
@@ -207,7 +207,7 @@ out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/xpos
  bionic/libc/kernel/uapi/asm-arm/asm/fcntl.h \
  bionic/libc/kernel/uapi/asm-generic/fcntl.h bionic/libc/include/dlfcn.h \
  art/runtime/entrypoints/entrypoint_utils.h art/runtime/jvalue.h \
- frameworks/base/cmds/dexposed/quick_argument_visitor.cpp \
+ frameworks/base/cmds/dexposed_art/quick_argument_visitor.cpp \
  art/runtime/entrypoints/quick/callee_save_frame.h \
  art/runtime/thread-inl.h \
  art/runtime/arch/arm/quick_method_frame_info_arm.h \
@@ -273,10 +273,10 @@ out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/xpos
  art/runtime/handle_scope-inl.h art/runtime/indirect_reference_table.h \
  art/runtime/mirror/class-inl.h art/runtime/mirror/object-inl.h \
  art/runtime/mirror/throwable.h \
- frameworks/base/cmds/dexposed/quick_arg_array.cpp
- frameworks/base/cmds/dexposed/xposed.cpp :
+ frameworks/base/cmds/dexposed_art/quick_arg_array.cpp
+ frameworks/base/cmds/dexposed_art/dexposed.cpp :
  build/core/combo/include/arch/linux-arm/AndroidConfig.h :
- frameworks/base/cmds/dexposed/xposed.h :
+ frameworks/base/cmds/dexposed_art/dexposed.h :
  libnativehelper/include/nativehelper/jni.h :
  prebuilts/gcc/darwin-x86/arm/arm-linux-androideabi-4.8/bin/../lib/gcc/arm-linux-androideabi/4.8/include/stdarg.h :
  bionic/libc/include/stdint.h :
@@ -482,7 +482,7 @@ out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/xpos
  bionic/libc/kernel/uapi/asm-arm/asm/fcntl.h :
  bionic/libc/kernel/uapi/asm-generic/fcntl.h bionic/libc/include/dlfcn.h :
  art/runtime/entrypoints/entrypoint_utils.h art/runtime/jvalue.h :
- frameworks/base/cmds/dexposed/quick_argument_visitor.cpp :
+ frameworks/base/cmds/dexposed_art/quick_argument_visitor.cpp :
  art/runtime/entrypoints/quick/callee_save_frame.h :
  art/runtime/thread-inl.h :
  art/runtime/arch/arm/quick_method_frame_info_arm.h :
@@ -548,4 +548,4 @@ out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_l_intermediates/xpos
  art/runtime/handle_scope-inl.h art/runtime/indirect_reference_table.h :
  art/runtime/mirror/class-inl.h art/runtime/mirror/object-inl.h :
  art/runtime/mirror/throwable.h :
- frameworks/base/cmds/dexposed/quick_arg_array.cpp :
+ frameworks/base/cmds/dexposed_art/quick_arg_array.cpp :
