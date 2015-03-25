@@ -291,7 +291,7 @@ namespace art {
 				== (void *) GetQuickDexposedInvokeHandler();
 	}
 
-	jobject InvokeXposedMethod(const ScopedObjectAccessAlreadyRunnable& soa, jobject javaMethod,
+	jobject InvokeDexposedMethod(const ScopedObjectAccessAlreadyRunnable& soa, jobject javaMethod,
 	                     jobject javaReceiver, jobject javaArgs, bool accessible) {
 	  // We want to make sure that the stack is not within a small distance from the
 	  // protected region in case we are calling into a leaf function whose stack
@@ -369,29 +369,29 @@ namespace art {
 	                                                     result));
 	}
 
-	extern "C" jobject com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative(
+	extern "C" jobject com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative(
 			JNIEnv* env, jclass, jobject java_method, jint, jobject, jobject,
 			jobject thiz, jobject args)
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
-		LOG(INFO) << "xposed: >>> invokeOriginalMethodNative";
+		LOG(INFO) << "dexposed: >>> invokeOriginalMethodNative";
 
 		ScopedObjectAccess soa(env);
 
 		ArtMethod* method = ArtMethod::FromReflectedMethod(soa, java_method);
 
-		XposedHookInfo* hookInfo = (XposedHookInfo*) method->GetNativeMethod();
+		DexposedHookInfo* hookInfo = (DexposedHookInfo*) method->GetNativeMethod();
 
-		return InvokeXposedMethod(soa, hookInfo->original_method, thiz, args, true);
+		return InvokeDexposedMethod(soa, hookInfo->original_method, thiz, args, true);
 	}
 
-	extern "C" jobject com_taobao_android_dexposed_XposedBridge_invokeSuperNative(
+	extern "C" jobject com_taobao_android_dexposed_DexposedBridge_invokeSuperNative(
 			JNIEnv* env, jclass, jobject thiz, jobject args, jobject java_method, jobject, jobject,
 			jint slot, jboolean check)
 
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
-		LOG(INFO) << "xposed: >>> invokeNonVirtualNative";
+		LOG(INFO) << "dexposed: >>> invokeNonVirtualNative";
 
 		ScopedObjectAccess soa(env);
 		ArtMethod* method = ArtMethod::FromReflectedMethod(soa, java_method);
@@ -405,23 +405,23 @@ namespace art {
 						env->NewGlobalRef(
 								soa.AddLocalReference < jobject > (mm)));
 
-		return InvokeXposedMethod(soa, reflect_method, thiz, args, true);
+		return InvokeDexposedMethod(soa, reflect_method, thiz, args, true);
 	}
 
-	static const JNINativeMethod xposedMethods[] =
+	static const JNINativeMethod dexposedMethods[] =
 	{
-		{ "initNative", "()Z", (void*) com_taobao_android_dexposed_XposedBridge_initNative },
+		{ "initNative", "()Z", (void*) com_taobao_android_dexposed_DexposedBridge_initNative },
 		{ "hookMethodNative", "(Ljava/lang/reflect/Member;Ljava/lang/Class;ILjava/lang/Object;)V",
-							(void*) com_taobao_android_dexposed_XposedBridge_hookMethodNative },
+							(void*) com_taobao_android_dexposed_DexposedBridge_hookMethodNative },
 		{ "invokeOriginalMethodNative",
 				  "(Ljava/lang/reflect/Member;I[Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",
-							(void*) com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative },
+							(void*) com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative },
 		{ "invokeSuperNative", "(Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/reflect/Member;Ljava/lang/Class;[Ljava/lang/Class;Ljava/lang/Class;I)Ljava/lang/Object;",
-				(void*) com_taobao_android_dexposed_XposedBridge_invokeSuperNative},
+				(void*) com_taobao_android_dexposed_DexposedBridge_invokeSuperNative},
 	};
 
-	static int register_com_taobao_android_dexposed_XposedBridge(JNIEnv* env) {
-		return env->RegisterNatives(xposed_class, xposedMethods, sizeof(xposedMethods) / sizeof(xposedMethods[0]));
+	static int register_com_taobao_android_dexposed_DexposedBridge(JNIEnv* env) {
+		return env->RegisterNatives(dexposed_class, dexposedMethods, sizeof(dexposedMethods) / sizeof(dexposedMethods[0]));
 	}
 }
 
