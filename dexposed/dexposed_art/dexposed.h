@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef XPOSED_H
-#define XPOSED_H
+#ifndef DEXPOSED_H
+#define DEXPOSED_H
 
 #define ANDROID_SMP 0
 #include <jni.h>
@@ -64,26 +64,25 @@ using art::ClassLinker;
 using art::ScopedJniEnvLocalRefState;
 using art::ThrowLocation;
 
-#define XPOSED_JAR "system/framework/XposedBridge.jar"
-#define XPOSED_CLASS "com/taobao/android/dexposed/XposedBridge"
-#define XPOSED_CLASS_DOTS "com.taobao.android.dexposed.XposedBridge"
+#define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
+#define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 
 #define SHARED_LOCKS_REQUIRED(...) THREAD_ANNOTATION_ATTRIBUTE__(shared_locks_required(__VA_ARGS__))
 
 namespace art {
-    struct XposedHookInfo {
+    struct DexposedHookInfo {
         jobject reflectedMethod;
         jobject additionalInfo;
         jobject original_method;
     };
 
-    static bool xposedIsHooked(ArtMethod* method);
+    static bool dexposedIsHooked(ArtMethod* method);
 
-    static jboolean com_taobao_android_dexposed_XposedBridge_initNative(JNIEnv* env, jclass clazz);
-    static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject javaMethod, jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect);
+    static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env, jclass clazz);
+    static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject javaMethod, jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect);
 
-    static int register_com_taobao_android_dexposed_XposedBridge(JNIEnv* env);
+    static int register_com_taobao_android_dexposed_DexposedBridge(JNIEnv* env);
 
 } // namespace android
 
-#endif  // XPOSED_H
+#endif  // DEXPOSED_H

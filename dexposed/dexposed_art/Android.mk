@@ -2,8 +2,8 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
-	xposed.cpp \
-	art_quick_xposed_invoke_handler.S
+	dexposed.cpp \
+	art_quick_dexposed_invoke_handler.S
 
 LOCAL_CFLAGS += -std=c++0x -O0
 LOCAL_C_INCLUDES := \

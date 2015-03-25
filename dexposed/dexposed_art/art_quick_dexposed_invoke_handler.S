@@ -1,7 +1,7 @@
 #include "arch/arm/asm_support_arm.S"
 
-     .extern artQuickXposedInvokeHandler
-ENTRY art_quick_xposed_invoke_handler
+     .extern artQuickDexposedInvokeHandler
+ENTRY art_quick_dexposed_invoke_handler
     push {r1-r3, r5-r8, r10-r11, lr}  @ 10 words of callee saves
     .save {r1-r3, r5-r8, r10-r11, lr}
     .cfi_rel_offset r1, 0
@@ -21,7 +21,7 @@ ENTRY art_quick_xposed_invoke_handler
     str     r0, [sp, #0]           @ place proxy method at bottom of frame
     mov     r2, r9                 @ pass Thread::Current
     mov     r3, sp                 @ pass SP
-    blx     artQuickXposedInvokeHandler  @ (Method* proxy method, receiver, Thread*, SP)
+    blx     artQuickDexposedInvokeHandler  @ (Method* proxy method, receiver, Thread*, SP)
     ldr     r2, [r9, #THREAD_EXCEPTION_OFFSET]  @ load Thread::Current()->exception_
     add     sp, #16                @ skip r1-r3, 4 bytes padding.
     .cfi_adjust_cfa_offset -16
@@ -69,4 +69,4 @@ ENTRY art_quick_xposed_invoke_handler
     mov    r0, r9                              @ pass Thread::Current
     mov    r1, sp                              @ pass SP
     b      artDeliverPendingExceptionFromCode  @ artDeliverPendingExceptionFromCode(Thread*, SP)
-END art_quick_xposed_invoke_handler
+END art_quick_dexposed_invoke_handler

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "xposed.h"
+#include "dexposed.h"
 
 #include <utils/Log.h>
 #include <android_runtime/AndroidRuntime.h>
@@ -34,39 +34,39 @@
 
 namespace art {
 
-	jclass xposed_class = NULL;
-	jmethodID xposed_handle_hooked_method = NULL;
+	jclass dexposed_class = NULL;
+	jmethodID dexposed_handle_hooked_method = NULL;
 
 	void logMethod(const char* tag, ArtMethod* method) {
-		LOG(INFO) << "xposed:" << tag << " " << method << " " << PrettyMethod(method);
+		LOG(INFO) << "dexposed:" << tag << " " << method << " " << PrettyMethod(method);
 	}
 
-	bool xposedOnVmCreated(JNIEnv* env, const char*) {
+	bool dexposedOnVmCreated(JNIEnv* env, const char*) {
 
-		xposed_class = env->FindClass(XPOSED_CLASS);
-		xposed_class = reinterpret_cast<jclass>(env->NewGlobalRef(xposed_class));
+		dexposed_class = env->FindClass(DEXPOSED_CLASS);
+		dexposed_class = reinterpret_cast<jclass>(env->NewGlobalRef(dexposed_class));
 
-		if (xposed_class == NULL) {
-			LOG(ERROR) << "xposed: Error while loading Xposed class " << XPOSED_CLASS;
+		if (dexposed_class == NULL) {
+			LOG(ERROR) << "dexposed: Error while loading Dexposed class " << DEXPOSED_CLASS;
 			env->ExceptionClear();
 			return false;
 		}
 
-		LOG(INFO) << "xposed: now initializing, Found Xposed class " << XPOSED_CLASS;
-		if (register_com_taobao_android_dexposed_XposedBridge(env) != JNI_OK) {
-			LOG(ERROR) << "xposed: Could not register natives for " << XPOSED_CLASS;
+		LOG(INFO) << "dexposed: now initializing, Found Dexposed class " << DEXPOSED_CLASS;
+		if (register_com_taobao_android_dexposed_DexposedBridge(env) != JNI_OK) {
+			LOG(ERROR) << "dexposed: Could not register natives for " << DEXPOSED_CLASS;
 			env->ExceptionClear();
 			return false;
 		}
 
-		jmethodID xposedbridgeMainMethod = env->GetStaticMethodID(xposed_class,
+		jmethodID dexposedbridgeMainMethod = env->GetStaticMethodID(dexposed_class,
 				"main", "()V");
-		if (xposedbridgeMainMethod == NULL) {
-			LOG(ERROR) << "xposed: Could not find method " << XPOSED_CLASS << ".main()";
+		if (dexposedbridgeMainMethod == NULL) {
+			LOG(ERROR) << "dexposed: Could not find method " << DEXPOSED_CLASS << ".main()";
 			env->ExceptionClear();
 			return false;
 		}
-		env->CallStaticVoidMethod(xposed_class, xposedbridgeMainMethod);
+		env->CallStaticVoidMethod(dexposed_class, dexposedbridgeMainMethod);
 
 		return true;
 	}
@@ -80,38 +80,38 @@ namespace art {
 			return result;
 		}
 
-		int keepLoadingXposed = xposedOnVmCreated(env, NULL);
+		int keepLoadingDexposed = dexposedOnVmCreated(env, NULL);
 
 		return JNI_VERSION_1_6;
 	}
 
-	static jboolean com_taobao_android_dexposed_XposedBridge_initNative(JNIEnv* env,
+	static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env,
 			jclass) {
 
-		LOG(INFO) << "xposed: com_taobao_android_dexposed_XposedBridge_initNative";
+		LOG(INFO) << "dexposed: com_taobao_android_dexposed_DexposedBridge_initNative";
 
-		xposed_handle_hooked_method =
-				env->GetStaticMethodID(xposed_class, "handleHookedMethod",
+		dexposed_handle_hooked_method =
+				env->GetStaticMethodID(dexposed_class, "handleHookedMethod",
 						"(Ljava/lang/reflect/Member;ILjava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-		if (xposed_handle_hooked_method == NULL) {
-			LOG(ERROR) << "xposed: Could not find method " << XPOSED_CLASS << ".handleHookedMethod()";
+		if (dexposed_handle_hooked_method == NULL) {
+			LOG(ERROR) << "dexposed: Could not find method " << DEXPOSED_CLASS << ".handleHookedMethod()";
 			env->ExceptionClear();
 			return false;
 		}
 		return true;
 	}
 
-	extern "C" void art_quick_xposed_invoke_handler();
-	static inline const void* GetQuickXposedInvokeHandler() {
-		return reinterpret_cast<void*>(art_quick_xposed_invoke_handler);
+	extern "C" void art_quick_dexposed_invoke_handler();
+	static inline const void* GetQuickDexposedInvokeHandler() {
+		return reinterpret_cast<void*>(art_quick_dexposed_invoke_handler);
 	}
 
-	JValue xposedCallHandler(ScopedObjectAccessAlreadyRunnable& soa,
+	JValue dexposedCallHandler(ScopedObjectAccessAlreadyRunnable& soa,
 			const char* shorty, jobject rcvr_jobj, jmethodID method,
 			std::vector<jvalue>& args)
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
-		LOG(INFO) << "xposed: >>> xposedCallHandler";
+		LOG(INFO) << "dexposed: >>> dexposedCallHandler";
 
 		// Build argument array possibly triggering GC.
 		soa.Self()->AssertThreadSuspensionIsAllowable();
@@ -145,10 +145,10 @@ namespace art {
 			}
 		}
 
-		XposedHookInfo* hookInfo =
-				(XposedHookInfo*) (soa.DecodeMethod(method)->GetNativeMethod());
+		DexposedHookInfo* hookInfo =
+				(DexposedHookInfo*) (soa.DecodeMethod(method)->GetNativeMethod());
 
-		// Call XposedBridge.handleHookedMethod(Member method, int originalMethodId, Object additionalInfoObj,
+		// Call DexposedBridge.handleHookedMethod(Member method, int originalMethodId, Object additionalInfoObj,
 		//                                      Object thisObject, Object[] args)
 		jvalue invocation_args[5];
 		invocation_args[0].l = hookInfo->reflectedMethod;
@@ -156,8 +156,8 @@ namespace art {
 		invocation_args[2].l = hookInfo->additionalInfo;
 		invocation_args[3].l = rcvr_jobj;
 		invocation_args[4].l = args_jobj;
-		jobject result = soa.Env()->CallStaticObjectMethodA(xposed_class,
-				xposed_handle_hooked_method, invocation_args);
+		jobject result = soa.Env()->CallStaticObjectMethodA(dexposed_class,
+				dexposed_handle_hooked_method, invocation_args);
 
 		// Unbox the result if necessary and return it.
 		if (UNLIKELY(soa.Self()->IsExceptionPending())) {
@@ -187,7 +187,7 @@ namespace art {
 	// which is responsible for recording callee save registers. We explicitly place into jobjects the
 	// incoming reference arguments (so they survive GC). We invoke the invocation handler, which is a
 	// field within the proxy object, which will box the primitive arguments and deal with error cases.
-	extern "C" uint64_t artQuickXposedInvokeHandler(ArtMethod* proxy_method,
+	extern "C" uint64_t artQuickDexposedInvokeHandler(ArtMethod* proxy_method,
 			Object* receiver, Thread* self, StackReference<ArtMethod>* sp)
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
@@ -229,17 +229,17 @@ namespace art {
 
 		jmethodID proxy_methodid = soa.EncodeMethod(proxy_method);
 		self->EndAssertNoThreadSuspension(old_cause);
-		JValue result = xposedCallHandler(soa, shorty, rcvr_jobj,
+		JValue result = dexposedCallHandler(soa, shorty, rcvr_jobj,
 				proxy_methodid, args);
 		local_ref_visitor.FixupReferences();
 		return result.GetJ();
 	}
 
-	static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(
+	static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(
 			JNIEnv* env, jclass, jobject java_method, jobject, jint,
 			jobject additional_info) {
 
-		LOG(INFO) << "xposed: >>> hookMethodNative";
+		LOG(INFO) << "dexposed: >>> hookMethodNative";
 
 		ScopedObjectAccess soa(env);
 		art::Thread* self = art::Thread::Current();
@@ -252,12 +252,12 @@ namespace art {
 			Runtime::Current()->GetClassLinker()->EnsureInitialized(
 					shs.NewHandle(method->GetDeclaringClass()), true, true);
 		}
-		if (xposedIsHooked(method)) {
+		if (dexposedIsHooked(method)) {
 			return;
 		}
 
-		XposedHookInfo* hookInfo = (XposedHookInfo*) calloc(1,
-				sizeof(XposedHookInfo));
+		DexposedHookInfo* hookInfo = (DexposedHookInfo*) calloc(1,
+				sizeof(DexposedHookInfo));
 
 		ArtMethod* original_art_method =
 				Runtime::Current()->GetClassLinker()->AllocArtMethod(self);
@@ -280,15 +280,15 @@ namespace art {
 
 		method->SetNativeMethod((uint8_t*) hookInfo);
 
-		method->SetEntryPointFromQuickCompiledCode(GetQuickXposedInvokeHandler());
+		method->SetEntryPointFromQuickCompiledCode(GetQuickDexposedInvokeHandler());
 
 		// Adjust access flags
 		method->SetAccessFlags((method->GetAccessFlags() & ~kAccNative));
 	}
 
-	static bool xposedIsHooked(ArtMethod* method) {
+	static bool dexposedIsHooked(ArtMethod* method) {
 		return (method->GetEntryPointFromQuickCompiledCode())
-				== (void *) GetQuickXposedInvokeHandler();
+				== (void *) GetQuickDexposedInvokeHandler();
 	}
 
 	jobject InvokeXposedMethod(const ScopedObjectAccessAlreadyRunnable& soa, jobject javaMethod,
