@@ -17,12 +17,12 @@
  */
 
 /*
- * Xposed enables "god mode" for developers
+ * Dexposed enables "god mode" for app developers
  */
 
-#define LOG_TAG "Xposed"
+#define LOG_TAG "Dexposed"
 
-#include "xposed.h"
+#include "dexposed.h"
 
 #include <utils/Log.h>
 #include <android_runtime/AndroidRuntime.h>
@@ -32,7 +32,7 @@
 #include <cutils/properties.h>
 #include <dlfcn.h>
 
-#include "xposed_offsets.h"
+#include "dexposed_offsets.h"
 
 #include "native/InternalNativePriv.h"
 
@@ -44,10 +44,10 @@ namespace android {
 ////////////////////////////////////////////////////////////
 // variables
 ////////////////////////////////////////////////////////////
-bool keepLoadingXposed = false;
+bool keepLoadingDexposed = false;
 ClassObject* objectArrayClass = NULL;
-jclass xposedClass = NULL;
-Method* xposedHandleHookedMethod = NULL;
+jclass dexposedClass = NULL;
+Method* dexposedHandleHookedMethod = NULL;
 
 void* PTR_gDvmJit = NULL;
 size_t arrayContentsOffset = 0;
@@ -106,7 +106,7 @@ void initTypePointers()
     }
 }
 
-void xposedInfo() {
+void dexposedInfo() {
     char release[PROPERTY_VALUE_MAX];
     char sdk[PROPERTY_VALUE_MAX];
     char manufacturer[PROPERTY_VALUE_MAX];
@@ -123,7 +123,7 @@ void xposedInfo() {
     property_get("ro.build.fingerprint", fingerprint, "n/a");
 
     
-    LOGI("Starting Dexposed binary version %s, compiled for SDK %d\n", XPOSED_VERSION, PLATFORM_SDK_VERSION);
+    LOGI("Starting Dexposed binary version %s, compiled for SDK %d\n", DEXPOSED_VERSION, PLATFORM_SDK_VERSION);
     ALOGD("Phone: %s (%s), Android version %s (SDK %s)\n", model, manufacturer, release, sdk);
     ALOGD("ROM: %s\n", rom);
     ALOGD("Build fingerprint: %s\n", fingerprint);
@@ -153,17 +153,17 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved)
     }
 
     initTypePointers();
-    xposedInfo();
-    keepLoadingXposed = isRunningDalvik();
-    keepLoadingXposed = xposedOnVmCreated(env, NULL);
+    dexposedInfo();
+    keepLoadingDexposed = isRunningDalvik();
+    keepLoadingDexposed = dexposedOnVmCreated(env, NULL);
 
     return JNI_VERSION_1_6;
 }
 
-bool xposedOnVmCreated(JNIEnv* env, const char* className) {
+bool dexposedOnVmCreated(JNIEnv* env, const char* className) {
 
-    keepLoadingXposed = keepLoadingXposed && xposedInitMemberOffsets(env);
-    if (!keepLoadingXposed)
+    keepLoadingDexposed = keepLoadingDexposed && dexposedInitMemberOffsets(env);
+    if (!keepLoadingDexposed)
         return false;
 
     // disable some access checks
@@ -174,38 +174,38 @@ bool xposedOnVmCreated(JNIEnv* env, const char* className) {
 
     env->ExceptionClear();
 
-    xposedClass = env->FindClass(XPOSED_CLASS);
-    xposedClass = reinterpret_cast<jclass>(env->NewGlobalRef(xposedClass));
+    dexposedClass = env->FindClass(DEXPOSED_CLASS);
+    dexposedClass = reinterpret_cast<jclass>(env->NewGlobalRef(dexposedClass));
     
-    if (xposedClass == NULL) {
-        ALOGE("Error while loading Xposed class '%s':\n", XPOSED_CLASS);
+    if (dexposedClass == NULL) {
+        ALOGE("Error while loading Dexposed class '%s':\n", DEXPOSED_CLASS);
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
         return false;
     }
 
-    ALOGI("Found Xposed class '%s', now initializing\n", XPOSED_CLASS);
-    if (register_com_taobao_android_dexposed_XposedBridge(env) != JNI_OK) {
-        ALOGE("Could not register natives for '%s'\n", XPOSED_CLASS);
+    ALOGI("Found Dexposed class '%s', now initializing\n", DEXPOSED_CLASS);
+    if (register_com_taobao_android_dexposed_DexposedBridge(env) != JNI_OK) {
+        ALOGE("Could not register natives for '%s'\n", DEXPOSED_CLASS);
         return false;
     }
 
 
-    jmethodID xposedbridgeMainMethod = env->GetStaticMethodID(xposedClass, "main","()V");
-    if (xposedbridgeMainMethod == NULL) {
-		ALOGE("ERROR: could not find method %s.main()\n", XPOSED_CLASS);
+    jmethodID dexposedbridgeMainMethod = env->GetStaticMethodID(dexposedClass, "main","()V");
+    if (dexposedbridgeMainMethod == NULL) {
+		ALOGE("ERROR: could not find method %s.main()\n", DEXPOSED_CLASS);
 		dvmLogExceptionStackTrace();
 		env->ExceptionClear();
-		keepLoadingXposed = false;
+		keepLoadingDexposed = false;
 		return false;
     }
-    env->CallStaticVoidMethod(xposedClass, xposedbridgeMainMethod);
+    env->CallStaticVoidMethod(dexposedClass, dexposedbridgeMainMethod);
 
     return true;
 }
 
 
-static bool xposedInitMemberOffsets(JNIEnv* env) {
+static bool dexposedInitMemberOffsets(JNIEnv* env) {
 
     PTR_gDvmJit = dlsym(RTLD_DEFAULT, "gDvmJit");
 
@@ -214,7 +214,7 @@ static bool xposedInitMemberOffsets(JNIEnv* env) {
     } else {
         offsetMode = MEMBER_OFFSET_MODE_WITH_JIT;
     }
-    ALOGD("Using structure member offsets for mode %s", xposedOffsetModesDesc[offsetMode]);
+    ALOGD("Using structure member offsets for mode %s", dexposedOffsetModesDesc[offsetMode]);
 
     MEMBER_OFFSET_COPY(DvmJitGlobals, codeCacheFull);
 
@@ -239,7 +239,7 @@ static bool xposedInitMemberOffsets(JNIEnv* env) {
     return true;
 }
 
-static inline void xposedSetObjectArrayElement(const ArrayObject* obj, int index, Object* val) {
+static inline void dexposedSetObjectArrayElement(const ArrayObject* obj, int index, Object* val) {
     uintptr_t arrayContents = (uintptr_t)obj + arrayContentsOffset;
     ((Object **)arrayContents)[index] = val;
     dvmWriteBarrierArray(obj, index, index + 1);
@@ -250,14 +250,14 @@ static inline void xposedSetObjectArrayElement(const ArrayObject* obj, int index
 // handling hooked methods / helpers
 ////////////////////////////////////////////////////////////
 
-static void xposedCallHandler(const u4* args, JValue* pResult, const Method* method, ::Thread* self) {
+static void dexposedCallHandler(const u4* args, JValue* pResult, const Method* method, ::Thread* self) {
 
-    if (!xposedIsHooked(method)) {
-        dvmThrowNoSuchMethodError("could not find Xposed original method - how did you even get here?");
+    if (!dexposedIsHooked(method)) {
+        dvmThrowNoSuchMethodError("could not find Dexposed original method - how did you even get here?");
         return;
     }
 
-    XposedHookInfo* hookInfo = (XposedHookInfo*) method->insns;
+    DexposedHookInfo* hookInfo = (DexposedHookInfo*) method->insns;
     Method* original = (Method*) hookInfo;
     Object* originalReflected = hookInfo->reflectedMethod;
     Object* additionalInfo = hookInfo->additionalInfo;
@@ -311,12 +311,12 @@ static void xposedCallHandler(const u4* args, JValue* pResult, const Method* met
             obj = NULL;
             srcIndex++;
         }
-        xposedSetObjectArrayElement(argsArray, dstIndex++, obj);
+        dexposedSetObjectArrayElement(argsArray, dstIndex++, obj);
     }
     
     // call the Java handler function
     JValue result;
-    dvmCallMethod(self, xposedHandleHookedMethod, NULL, &result,
+    dvmCallMethod(self, dexposedHandleHookedMethod, NULL, &result,
         originalReflected, (int) original, additionalInfo, thisObject, argsArray);
         
     dvmReleaseTrackedAlloc((Object *)argsArray, self);
@@ -380,60 +380,60 @@ static void patchReturnTrue(uintptr_t function) {
 // JNI methods
 ////////////////////////////////////////////////////////////
 
-static jboolean com_taobao_android_dexposed_XposedBridge_initNative(JNIEnv* env, jclass clazz) {
+static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env, jclass clazz) {
 
-	if (!keepLoadingXposed) {
-        ALOGE("Not initializing Xposed because of previous errors\n");
+	if (!keepLoadingDexposed) {
+        ALOGE("Not initializing Dexposed because of previous errors\n");
         return false;
     }
 
     ::Thread* self = dvmThreadSelf();
 
-    xposedHandleHookedMethod = (Method*) env->GetStaticMethodID(xposedClass, "handleHookedMethod",
+    dexposedHandleHookedMethod = (Method*) env->GetStaticMethodID(dexposedClass, "handleHookedMethod",
         "(Ljava/lang/reflect/Member;ILjava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-    if (xposedHandleHookedMethod == NULL) {
-        LOGE("ERROR: could not find method %s.handleHookedMethod(Member, int, Object, Object, Object[])\n", XPOSED_CLASS);
+    if (dexposedHandleHookedMethod == NULL) {
+        LOGE("ERROR: could not find method %s.handleHookedMethod(Member, int, Object, Object, Object[])\n", DEXPOSED_CLASS);
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
-        keepLoadingXposed = false;
+        keepLoadingDexposed = false;
         return false;
     }
 
-    Method* xposedInvokeOriginalMethodNative = (Method*) env->GetStaticMethodID(xposedClass, "invokeOriginalMethodNative",
+    Method* dexposedInvokeOriginalMethodNative = (Method*) env->GetStaticMethodID(dexposedClass, "invokeOriginalMethodNative",
         "(Ljava/lang/reflect/Member;I[Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-    if (xposedInvokeOriginalMethodNative == NULL) {
-        LOGE("ERROR: could not find method %s.invokeOriginalMethodNative(Member, int, Class[], Class, Object, Object[])\n", XPOSED_CLASS);
+    if (dexposedInvokeOriginalMethodNative == NULL) {
+        LOGE("ERROR: could not find method %s.invokeOriginalMethodNative(Member, int, Class[], Class, Object, Object[])\n", DEXPOSED_CLASS);
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
-        keepLoadingXposed = false;
+        keepLoadingDexposed = false;
         return false;
     }
-    dvmSetNativeFunc(xposedInvokeOriginalMethodNative, com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative, NULL);
+    dvmSetNativeFunc(dexposedInvokeOriginalMethodNative, com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative, NULL);
 
-    Method* xposedInvokeSuperNative = (Method*) env->GetStaticMethodID(xposedClass, "invokeSuperNative",
+    Method* dexposedInvokeSuperNative = (Method*) env->GetStaticMethodID(dexposedClass, "invokeSuperNative",
             "(Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/reflect/Member;Ljava/lang/Class;[Ljava/lang/Class;Ljava/lang/Class;I)Ljava/lang/Object;");
-	if (xposedInvokeSuperNative == NULL) {
-		LOGE("ERROR: could not find method %s.xposedInvokeNonVirtual(Object, Object[], Class, Class[], Class, int, boolean)\n", XPOSED_CLASS);
+	if (dexposedInvokeSuperNative == NULL) {
+		LOGE("ERROR: could not find method %s.dexposedInvokeNonVirtual(Object, Object[], Class, Class[], Class, int, boolean)\n", DEXPOSED_CLASS);
 		dvmLogExceptionStackTrace();
 		env->ExceptionClear();
-		keepLoadingXposed = false;
+		keepLoadingDexposed = false;
 		return false;
 	}
-    dvmSetNativeFunc(xposedInvokeSuperNative, com_taobao_android_dexposed_XposedBridge_invokeSuperNative, NULL);
+    dvmSetNativeFunc(dexposedInvokeSuperNative, com_taobao_android_dexposed_DexposedBridge_invokeSuperNative, NULL);
 
     objectArrayClass = dvmFindArrayClass("[Ljava/lang/Object;", NULL);
     if (objectArrayClass == NULL) {
         LOGE("Error while loading Object[] class");
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
-        keepLoadingXposed = false;
+        keepLoadingDexposed = false;
         return false;
     }
 
     return true;
 }
 
-static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject reflectedMethodIndirect,
+static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject reflectedMethodIndirect,
             jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect) {
     // Usage errors?
     if (declaredClassIndirect == NULL || reflectedMethodIndirect == NULL) {
@@ -449,20 +449,20 @@ static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(JNIEnv* en
         return;
     }
     
-    if (xposedIsHooked(method)) {
+    if (dexposedIsHooked(method)) {
         // already hooked
         return;
     }
     
     // Save a copy of the original method and other hook info
-    XposedHookInfo* hookInfo = (XposedHookInfo*) calloc(1, sizeof(XposedHookInfo));
+    DexposedHookInfo* hookInfo = (DexposedHookInfo*) calloc(1, sizeof(DexposedHookInfo));
     memcpy(hookInfo, method, sizeof(hookInfo->originalMethodStruct));
     hookInfo->reflectedMethod = dvmDecodeIndirectRef(dvmThreadSelf(), env->NewGlobalRef(reflectedMethodIndirect));
     hookInfo->additionalInfo = dvmDecodeIndirectRef(dvmThreadSelf(), env->NewGlobalRef(additionalInfoIndirect));
 
     // Replace method with our own code
     SET_METHOD_FLAG(method, ACC_NATIVE);
-    method->nativeFunc = &xposedCallHandler;
+    method->nativeFunc = &dexposedCallHandler;
     method->insns = (const u2*) hookInfo;
     method->registersSize = method->insSize;
     method->outsSize = 0;
@@ -479,7 +479,7 @@ static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(JNIEnv* en
 *
 * Invoke a super method via reflection.
 */
-static void com_taobao_android_dexposed_XposedBridge_invokeSuperNative(const u4* args,
+static void com_taobao_android_dexposed_DexposedBridge_invokeSuperNative(const u4* args,
     JValue* pResult, const Method* method, ::Thread* self)
 {
     Object* methObj = (Object*) args[0];
@@ -549,18 +549,18 @@ init_failed:
 
 
 
-static inline bool xposedIsHooked(const Method* method) {
-    return (method->nativeFunc == &xposedCallHandler);
+static inline bool dexposedIsHooked(const Method* method) {
+    return (method->nativeFunc == &dexposedCallHandler);
 }
 
 // simplified copy of Method.invokeNative, but calls the original (non-hooked) method and has no access checks
 // used when a method has been hooked
-static void com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative(const u4* args, JValue* pResult,
+static void com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative(const u4* args, JValue* pResult,
             const Method* method, ::Thread* self) {
     Method* meth = (Method*) args[1];
     if (meth == NULL) {
         meth = dvmGetMethodFromReflectObj((Object*) args[0]);
-        if (xposedIsHooked(meth)) {
+        if (dexposedIsHooked(meth)) {
             meth = (Method*) meth->insns;
         }
     }
@@ -574,13 +574,13 @@ static void com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative(
     return;
 }
 
-static const JNINativeMethod xposedMethods[] = {
-    {"hookMethodNative", "(Ljava/lang/reflect/Member;Ljava/lang/Class;ILjava/lang/Object;)V", (void*)com_taobao_android_dexposed_XposedBridge_hookMethodNative},
-    {"initNative", "()Z", (void*)com_taobao_android_dexposed_XposedBridge_initNative},
+static const JNINativeMethod dexposedMethods[] = {
+    {"hookMethodNative", "(Ljava/lang/reflect/Member;Ljava/lang/Class;ILjava/lang/Object;)V", (void*)com_taobao_android_dexposed_DexposedBridge_hookMethodNative},
+    {"initNative", "()Z", (void*)com_taobao_android_dexposed_DexposedBridge_initNative},
 };
 
-static int register_com_taobao_android_dexposed_XposedBridge(JNIEnv* env) {
-    return env->RegisterNatives(xposedClass, xposedMethods, NELEM(xposedMethods));
+static int register_com_taobao_android_dexposed_DexposedBridge(JNIEnv* env) {
+    return env->RegisterNatives(dexposedClass, dexposedMethods, NELEM(dexposedMethods));
 }
 
 }

@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef XPOSED_H_
-#define XPOSED_H_
+#ifndef DEXPOSED_H_
+#define DEXPOSED_H_
 
 #define ANDROID_SMP 0
 
@@ -37,9 +37,9 @@ extern "C" {
 
 namespace android {
 
-#define XPOSED_CLASS "com/taobao/android/dexposed/XposedBridge"
-#define XPOSED_CLASS_DOTS "com.taobao.android.dexposed.XposedBridge"
-#define XPOSED_VERSION "51"
+#define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
+#define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
+#define DEXPOSED_VERSION "51"
 
 #define NOALOG
 
@@ -56,7 +56,7 @@ namespace android {
 #endif
 
 
-struct XposedHookInfo {
+struct DexposedHookInfo {
     struct {
         Method originalMethod;
         // copy a few bytes more than defined for Method in AOSP
@@ -69,27 +69,27 @@ struct XposedHookInfo {
 };
 
 // called directoy by app_process
-void xposedInfo();
+void dexposedInfo();
 bool isRunningDalvik();
-bool xposedOnVmCreated(JNIEnv* env, const char* className);
-static bool xposedInitMemberOffsets(JNIEnv* env);
-static inline void xposedSetObjectArrayElement(const ArrayObject* obj, int index, Object* val);
+bool dexposedOnVmCreated(JNIEnv* env, const char* className);
+static bool dexposedInitMemberOffsets(JNIEnv* env);
+static inline void dexposedSetObjectArrayElement(const ArrayObject* obj, int index, Object* val);
 
 // handling hooked methods / helpers
-static void xposedCallHandler(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
-static jobject xposedAddLocalReference(::Thread* self, Object* obj);
+static void dexposedCallHandler(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
+static jobject dexposedAddLocalReference(::Thread* self, Object* obj);
 static void replaceAsm(uintptr_t function, unsigned const char* newCode, size_t len);
 static void patchReturnTrue(uintptr_t function);
-static inline bool xposedIsHooked(const Method* method);
+static inline bool dexposedIsHooked(const Method* method);
 
 // JNI methods
-static jboolean com_taobao_android_dexposed_XposedBridge_initNative(JNIEnv* env, jclass clazz);
-static void com_taobao_android_dexposed_XposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject reflectedMethodIndirect,
+static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env, jclass clazz);
+static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject reflectedMethodIndirect,
             jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect);
-static void com_taobao_android_dexposed_XposedBridge_invokeOriginalMethodNative(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
-static void com_taobao_android_dexposed_XposedBridge_invokeSuperNative(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
+static void com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
+static void com_taobao_android_dexposed_DexposedBridge_invokeSuperNative(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
 
-static int register_com_taobao_android_dexposed_XposedBridge(JNIEnv* env);
+static int register_com_taobao_android_dexposed_DexposedBridge(JNIEnv* env);
 }
 
-#endif  // XPOSED_H_
+#endif  // DEXPOSED_H_

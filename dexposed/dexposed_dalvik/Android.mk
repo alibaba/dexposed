@@ -5,7 +5,7 @@ ifneq ($(shell expr $(PLATFORM_SDK_VERSION) < 14), 0)
 LOCAL_PRELINK_MODULE := false
 endif
 
-LOCAL_SRC_FILES:= xposed.cpp
+LOCAL_SRC_FILES:= dexposed.cpp
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \

@@ -38,12 +38,12 @@
 
 
 // here are the definitions of the modes and offsets
-enum xposedOffsetModes {
+enum dexposedOffsetModes {
     MEMBER_OFFSET_MODE_WITH_JIT,
     MEMBER_OFFSET_MODE_NO_JIT,
 };
-static xposedOffsetModes offsetMode;
-const char* xposedOffsetModesDesc[] = {
+static dexposedOffsetModes offsetMode;
+const char* dexposedOffsetModesDesc[] = {
     "WITH_JIT",
     "NO_JIT",
 };
@@ -53,8 +53,8 @@ MEMBER_OFFSET_DEFINE(DvmJitGlobals, codeCacheFull, 120, 0)
 
 
 
-// helper to determine the required values (compile with XPOSED_SHOW_OFFSET=true)
-#ifdef XPOSED_SHOW_OFFSETS
+// helper to determine the required values (compile with DEXPOSED_SHOW_OFFSET=true)
+#ifdef dexposed_SHOW_OFFSETS
     template<int s> struct RESULT;
     #ifdef WITH_JIT
         #pragma message "WITH_JIT is defined"
