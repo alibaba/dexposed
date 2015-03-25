@@ -23,6 +23,18 @@ Typical use-cases
 
 Integration
 -----------
+Directly add jar and two so files from dexposed and dexposedbridge to your project as compile libraries.
+
+Gradle dependency like following:
+
+native_dependencies {
+    artifact 'com.taobao.dexposed:dexposed_l:0.2+:armeabi'
+    artifact 'com.taobao.dexposed:dexposed:0.2+:armeabi'
+}
+dependencies {
+    compile files('libs/dexposedbridge.jar')
+}
+
 Insert the following line into the initialization phase of your app, as early as possible:
 
     public class MyApplication extends Application {
