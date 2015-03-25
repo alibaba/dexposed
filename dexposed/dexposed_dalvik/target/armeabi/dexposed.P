@@ -1,0 +1,417 @@
+out/target/product/generic/obj/SHARED_LIBRARIES/libdexposed_intermediates/dexposed.o: \
+ frameworks/base/cmds/dexposed_dalvik/dexposed.cpp \
+ system/core/include/arch/linux-arm/AndroidConfig.h \
+ frameworks/base/cmds/dexposed_dalvik/dexposed.h dalvik/vm/Dalvik.h \
+ dalvik/vm/Common.h \
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdbool.h \
+ bionic/libc/include/stdint.h external/stlport/stlport/stddef.h \
+ external/stlport/stlport/stl/_cprolog.h \
+ external/stlport/stlport/stl/config/features.h \
+ external/stlport/stlport/stl/_stlport_version.h \
+ external/stlport/stlport/stl/config/user_config.h \
+ external/stlport/stlport/stl/config/compat.h \
+ external/stlport/stlport/stl/config/host.h \
+ external/stlport/stlport/stl/config/_system.h \
+ external/stlport/stlport/stl/config/_android.h \
+ external/stlport/stlport/stl/config/_gcc.h \
+ external/stlport/stlport/stl/config/stl_confix.h \
+ external/stlport/stlport/stl/config/_native_headers.h \
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/stddef.h \
+ external/stlport/stlport/stl/_epilog.h \
+ external/stlport/stlport/stl/_config_compat_post.h \
+ bionic/libc/include/sys/_types.h \
+ bionic/libc/arch-arm/include/machine/_types.h \
+ external/stlport/stlport/stdio.h bionic/libc/include/../include/stdio.h \
+ bionic/libc/include/sys/cdefs.h bionic/libc/include/sys/cdefs_elf.h \
+ bionic/libc/include/android/api-level.h \
+ external/stlport/stlport/stdarg.h \
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/stdarg.h \
+ bionic/libc/include/sys/types.h \
+ bionic/libc/kernel/common/linux/posix_types.h \
+ bionic/libc/kernel/common/linux/stddef.h \
+ bionic/libc/kernel/common/linux/compiler.h \
+ bionic/libc/kernel/arch-arm/asm/posix_types.h \
+ bionic/libc/kernel/arch-arm/asm/types.h \
+ bionic/libc/kernel/common/linux/types.h \
+ bionic/libc/arch-arm/include/machine/kernel.h \
+ bionic/libc/include/sys/sysmacros.h external/stlport/stlport/assert.h \
+ bionic/libc/include/../include/assert.h system/core/include/cutils/log.h \
+ external/stlport/stlport/time.h bionic/libc/include/../include/time.h \
+ bionic/libc/include/sys/time.h bionic/libc/kernel/common/linux/time.h \
+ bionic/libc/kernel/arch-arm/asm/siginfo.h \
+ bionic/libc/kernel/common/asm-generic/siginfo.h \
+ bionic/libc/include/unistd.h bionic/libc/include/sys/select.h \
+ external/stlport/stlport/signal.h \
+ bionic/libc/include/../include/signal.h \
+ external/stlport/stlport/limits.h \
+ bionic/libc/include/../include/limits.h bionic/libc/include/sys/limits.h \
+ bionic/libc/kernel/common/linux/limits.h \
+ bionic/libc/arch-arm/include/machine/internal_types.h \
+ bionic/libc/arch-arm/include/machine/limits.h \
+ bionic/libc/include/sys/syslimits.h external/stlport/stlport/string.h \
+ bionic/libc/include/../include/string.h bionic/libc/include/malloc.h \
+ bionic/libc/kernel/arch-arm/asm/signal.h \
+ bionic/libc/kernel/common/asm-generic/signal.h \
+ bionic/libc/include/sys/sysconf.h \
+ bionic/libc/kernel/common/linux/capability.h \
+ bionic/libc/include/pathconf.h external/stlport/stlport/pthread.h \
+ external/stlport/stlport/stl/_prolog.h \
+ bionic/libc/include/../include/pthread.h bionic/libc/include/sched.h \
+ system/core/include/cutils/uio.h bionic/libc/include/sys/uio.h \
+ bionic/libc/kernel/common/linux/uio.h system/core/include/cutils/logd.h \
+ system/core/include/android/log.h bionic/libc/arch-arm/include/endian.h \
+ bionic/libc/include/sys/endian.h dalvik/vm/Inlines.h dalvik/vm/Misc.h \
+ external/stlport/stlport/string \
+ external/stlport/stlport/stl/debug/_debug.h \
+ external/stlport/stlport/stl/_string.h \
+ external/stlport/stlport/stl/_alloc.h \
+ external/stlport/stlport/stl/_cstddef.h \
+ external/stlport/stlport/stl/_cstdlib.h \
+ external/stlport/stlport/stdlib.h \
+ bionic/libc/include/../include/stdlib.h bionic/libc/include/alloca.h \
+ bionic/libc/include/strings.h bionic/libc/include/memory.h \
+ external/stlport/stlport/stl/_cmath.h external/stlport/stlport/math.h \
+ bionic/libm/include/../include/math.h \
+ external/stlport/stlport/stl/_cstring.h \
+ external/stlport/stlport/using/cstring \
+ external/stlport/stlport/stl/_algobase.h \
+ external/stlport/stlport/climits external/stlport/stlport/stl/_pair.h \
+ external/stlport/stlport/stl/type_traits.h \
+ external/stlport/stlport/stl/type_manips.h \
+ external/stlport/stlport/stl/_move_construct_fwk.h \
+ external/stlport/stlport/stl/_iterator_base.h \
+ external/stlport/stlport/stl/_ptrs_specialize.h \
+ external/stlport/stlport/stl/_algobase.c \
+ external/stlport/stlport/stl/_function_base.h \
+ external/stlport/stlport/stl/_iterator.h \
+ external/stlport/stlport/stl/_new.h bionic/libstdc++/include/new \
+ external/stlport/stlport/cstddef bionic/libstdc++/include/cstddef \
+ external/stlport/stlport/stl/_cstdio.h \
+ external/stlport/stlport/stl/_construct.h \
+ external/stlport/stlport/stl/_alloc.c \
+ external/stlport/stlport/stl/_string_fwd.h \
+ external/stlport/stlport/stl/_iosfwd.h \
+ external/stlport/stlport/stl/char_traits.h \
+ external/stlport/stlport/stl/_cwchar.h \
+ bionic/libc/include/../include/wchar.h \
+ external/stlport/stlport/stl/_mbstate_t.h \
+ external/stlport/stlport/stl/_uninitialized.h \
+ external/stlport/stlport/stl/_string_base.h \
+ external/stlport/stlport/stl/_string_npos.h \
+ external/stlport/stlport/stl/_string_operators.h \
+ external/stlport/stlport/stl/_string.c \
+ external/stlport/stlport/stl/_ctraits_fns.h \
+ external/stlport/stlport/stl/_function.h \
+ external/stlport/stlport/stl/_function_adaptors.h \
+ external/stlport/stlport/stl/_range_errors.h \
+ external/stlport/stlport/stl/_string_hash.h \
+ external/stlport/stlport/stl/_hash_fun.h \
+ external/stlport/stlport/stl/_string_io.h \
+ external/stlport/stlport/stl/_ostream.h \
+ external/stlport/stlport/stl/_ios.h \
+ external/stlport/stlport/stl/_ios_base.h \
+ external/stlport/stlport/stl/_stdexcept_base.h \
+ external/stlport/stlport/stl/_exception.h \
+ external/stlport/stlport/stl/_locale.h \
+ external/stlport/stlport/stl/_threads.h \
+ external/stlport/stlport/stl/_threads.c \
+ external/stlport/stlport/stl/_ctime.h \
+ external/stlport/stlport/stl/_facets_fwd.h \
+ external/stlport/stlport/stl/_ctype.h \
+ external/stlport/stlport/stl/c_locale.h \
+ external/stlport/stlport/stl/_numpunct.h \
+ external/stlport/stlport/stl/_ios.c \
+ external/stlport/stlport/stl/_streambuf.h \
+ external/stlport/stlport/stl/_streambuf.c \
+ external/stlport/stlport/stl/_ostreambuf_iterator.h \
+ external/stlport/stlport/stl/_ostream.c \
+ external/stlport/stlport/stl/_num_put.h \
+ external/stlport/stlport/stl/_iostream_string.h \
+ external/stlport/stlport/stl/_num_put.c \
+ external/stlport/stlport/stl/_limits.h external/stlport/stlport/cfloat \
+ external/stlport/stlport/float.h \
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/float.h \
+ external/stlport/stlport/stl/_limits.c \
+ external/stlport/stlport/stl/_istream.h \
+ external/stlport/stlport/stl/_istreambuf_iterator.h \
+ external/stlport/stlport/stl/_istream.c \
+ external/stlport/stlport/stl/_num_get.h \
+ external/stlport/stlport/stl/_num_get.c \
+ external/stlport/stlport/stl/_string_io.c dalvik/vm/Bits.h \
+ dalvik/vm/BitVector.h dalvik/libdex/SysUtil.h \
+ dalvik/libdex/DexDebugInfo.h dalvik/libdex/DexFile.h dalvik/vm/Common.h \
+ dalvik/libdex/DexFile.h dalvik/libdex/DexProto.h dalvik/libdex/DexUtf.h \
+ dalvik/libdex/ZipArchive.h dalvik/libdex/SysUtil.h dalvik/vm/DvmDex.h \
+ dalvik/vm/RawDexFile.h dalvik/vm/Sync.h dalvik/vm/oo/Object.h \
+ dalvik/vm/Atomic.h system/core/include/cutils/atomic.h \
+ system/core/include/cutils/atomic-inline.h \
+ system/core/include/cutils/atomic-arm.h \
+ bionic/libc/arch-arm/include/machine/cpu-features.h dalvik/vm/Native.h \
+ dalvik/vm/native/InternalNative.h dalvik/vm/DalvikVersion.h \
+ dalvik/vm/Debugger.h dalvik/vm/jdwp/Jdwp.h \
+ dalvik/vm/jdwp/JdwpConstants.h dalvik/vm/jdwp/ExpandBuf.h \
+ dalvik/vm/Common.h dalvik/vm/Bits.h dalvik/vm/Profile.h \
+ dalvik/vm/UtfString.h external/stlport/stlport/vector \
+ external/stlport/stlport/stl/_vector.h \
+ external/stlport/stlport/stl/_vector.c \
+ external/stlport/stlport/stl/_bvector.h \
+ external/stlport/stlport/stl/_relops_cont.h dalvik/vm/Intern.h \
+ dalvik/vm/ReferenceTable.h dalvik/vm/IndirectRefTable.h \
+ dalvik/vm/AtomicCache.h dalvik/vm/Thread.h \
+ dalvik/libnativehelper/include/nativehelper/jni.h \
+ dalvik/vm/interp/InterpState.h external/stlport/stlport/errno.h \
+ bionic/libc/include/../include/errno.h \
+ bionic/libc/kernel/common/linux/errno.h \
+ bionic/libc/kernel/arch-arm/asm/errno.h \
+ bionic/libc/kernel/common/asm-generic/errno.h \
+ bionic/libc/kernel/common/asm-generic/errno-base.h \
+ system/core/include/cutils/sched_policy.h dalvik/vm/Ddm.h \
+ dalvik/vm/Hash.h dalvik/vm/interp/Stack.h dalvik/vm/oo/Class.h \
+ dalvik/vm/oo/Resolve.h dalvik/vm/oo/Array.h dalvik/vm/Exception.h \
+ dalvik/vm/alloc/Alloc.h dalvik/vm/alloc/CardTable.h \
+ dalvik/vm/alloc/HeapDebug.h dalvik/vm/alloc/WriteBarrier.h \
+ dalvik/vm/oo/AccessCheck.h dalvik/vm/JarFile.h dalvik/vm/SignalCatcher.h \
+ dalvik/vm/StdioConverter.h dalvik/vm/JniInternal.h \
+ dalvik/vm/LinearAlloc.h dalvik/vm/analysis/DexVerify.h \
+ dalvik/vm/analysis/DexPrepare.h dalvik/vm/analysis/RegisterMap.h \
+ dalvik/vm/analysis/VerifySubs.h dalvik/vm/analysis/CodeVerify.h \
+ dalvik/vm/analysis/VfyBasicBlock.h dalvik/vm/PointerSet.h \
+ dalvik/vm/Init.h dalvik/libdex/DexOpcodes.h dalvik/libdex/InstrUtils.h \
+ dalvik/libdex/DexOpcodes.h dalvik/vm/AllocTracker.h \
+ dalvik/vm/PointerSet.h dalvik/vm/compiler/Compiler.h \
+ external/stlport/stlport/setjmp.h \
+ bionic/libc/include/../include/setjmp.h \
+ bionic/libc/arch-arm/include/machine/setjmp.h dalvik/vm/Thread.h \
+ dalvik/vm/Globals.h dalvik/vm/reflect/Reflect.h dalvik/vm/oo/TypeCheck.h \
+ dalvik/vm/Atomic.h dalvik/vm/interp/Interp.h dalvik/vm/InlineNative.h \
+ dalvik/vm/oo/ObjectInlines.h frameworks/base/include/utils/Log.h \
+ frameworks/base/include/android_runtime/AndroidRuntime.h \
+ frameworks/base/include/utils/Errors.h \
+ frameworks/base/include/binder/IBinder.h \
+ frameworks/base/include/utils/RefBase.h \
+ frameworks/base/include/utils/StrongPointer.h \
+ frameworks/base/include/utils/String16.h \
+ frameworks/base/include/utils/SharedBuffer.h \
+ frameworks/base/include/utils/Unicode.h \
+ frameworks/base/include/utils/Vector.h external/stlport/stlport/new \
+ frameworks/base/include/utils/VectorImpl.h \
+ frameworks/base/include/utils/TypeHelpers.h \
+ frameworks/base/include/utils/String8.h \
+ frameworks/base/include/utils/threads.h \
+ system/core/include/system/graphics.h \
+ frameworks/base/include/utils/Timers.h \
+ dalvik/libnativehelper/include/nativehelper/jni.h \
+ bionic/libc/include/sys/mman.h bionic/libc/kernel/arch-arm/asm/mman.h \
+ bionic/libc/kernel/common/asm-generic/mman.h \
+ bionic/libc/kernel/arch-arm/asm/page.h \
+ system/core/include/cutils/properties.h bionic/libc/include/dlfcn.h \
+ frameworks/base/cmds/dexposed_dalvik/dexposed_offsets.h \
+ dalvik/vm/native/InternalNativePriv.h
+ frameworks/base/cmds/dexposed_dalvik/dexposed.cpp :
+ system/core/include/arch/linux-arm/AndroidConfig.h :
+ frameworks/base/cmds/dexposed_dalvik/dexposed.h dalvik/vm/Dalvik.h :
+ dalvik/vm/Common.h :
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdbool.h :
+ bionic/libc/include/stdint.h external/stlport/stlport/stddef.h :
+ external/stlport/stlport/stl/_cprolog.h :
+ external/stlport/stlport/stl/config/features.h :
+ external/stlport/stlport/stl/_stlport_version.h :
+ external/stlport/stlport/stl/config/user_config.h :
+ external/stlport/stlport/stl/config/compat.h :
+ external/stlport/stlport/stl/config/host.h :
+ external/stlport/stlport/stl/config/_system.h :
+ external/stlport/stlport/stl/config/_android.h :
+ external/stlport/stlport/stl/config/_gcc.h :
+ external/stlport/stlport/stl/config/stl_confix.h :
+ external/stlport/stlport/stl/config/_native_headers.h :
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/stddef.h :
+ external/stlport/stlport/stl/_epilog.h :
+ external/stlport/stlport/stl/_config_compat_post.h :
+ bionic/libc/include/sys/_types.h :
+ bionic/libc/arch-arm/include/machine/_types.h :
+ external/stlport/stlport/stdio.h bionic/libc/include/../include/stdio.h :
+ bionic/libc/include/sys/cdefs.h bionic/libc/include/sys/cdefs_elf.h :
+ bionic/libc/include/android/api-level.h :
+ external/stlport/stlport/stdarg.h :
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/stdarg.h :
+ bionic/libc/include/sys/types.h :
+ bionic/libc/kernel/common/linux/posix_types.h :
+ bionic/libc/kernel/common/linux/stddef.h :
+ bionic/libc/kernel/common/linux/compiler.h :
+ bionic/libc/kernel/arch-arm/asm/posix_types.h :
+ bionic/libc/kernel/arch-arm/asm/types.h :
+ bionic/libc/kernel/common/linux/types.h :
+ bionic/libc/arch-arm/include/machine/kernel.h :
+ bionic/libc/include/sys/sysmacros.h external/stlport/stlport/assert.h :
+ bionic/libc/include/../include/assert.h system/core/include/cutils/log.h :
+ external/stlport/stlport/time.h bionic/libc/include/../include/time.h :
+ bionic/libc/include/sys/time.h bionic/libc/kernel/common/linux/time.h :
+ bionic/libc/kernel/arch-arm/asm/siginfo.h :
+ bionic/libc/kernel/common/asm-generic/siginfo.h :
+ bionic/libc/include/unistd.h bionic/libc/include/sys/select.h :
+ external/stlport/stlport/signal.h :
+ bionic/libc/include/../include/signal.h :
+ external/stlport/stlport/limits.h :
+ bionic/libc/include/../include/limits.h bionic/libc/include/sys/limits.h :
+ bionic/libc/kernel/common/linux/limits.h :
+ bionic/libc/arch-arm/include/machine/internal_types.h :
+ bionic/libc/arch-arm/include/machine/limits.h :
+ bionic/libc/include/sys/syslimits.h external/stlport/stlport/string.h :
+ bionic/libc/include/../include/string.h bionic/libc/include/malloc.h :
+ bionic/libc/kernel/arch-arm/asm/signal.h :
+ bionic/libc/kernel/common/asm-generic/signal.h :
+ bionic/libc/include/sys/sysconf.h :
+ bionic/libc/kernel/common/linux/capability.h :
+ bionic/libc/include/pathconf.h external/stlport/stlport/pthread.h :
+ external/stlport/stlport/stl/_prolog.h :
+ bionic/libc/include/../include/pthread.h bionic/libc/include/sched.h :
+ system/core/include/cutils/uio.h bionic/libc/include/sys/uio.h :
+ bionic/libc/kernel/common/linux/uio.h system/core/include/cutils/logd.h :
+ system/core/include/android/log.h bionic/libc/arch-arm/include/endian.h :
+ bionic/libc/include/sys/endian.h dalvik/vm/Inlines.h dalvik/vm/Misc.h :
+ external/stlport/stlport/string :
+ external/stlport/stlport/stl/debug/_debug.h :
+ external/stlport/stlport/stl/_string.h :
+ external/stlport/stlport/stl/_alloc.h :
+ external/stlport/stlport/stl/_cstddef.h :
+ external/stlport/stlport/stl/_cstdlib.h :
+ external/stlport/stlport/stdlib.h :
+ bionic/libc/include/../include/stdlib.h bionic/libc/include/alloca.h :
+ bionic/libc/include/strings.h bionic/libc/include/memory.h :
+ external/stlport/stlport/stl/_cmath.h external/stlport/stlport/math.h :
+ bionic/libm/include/../include/math.h :
+ external/stlport/stlport/stl/_cstring.h :
+ external/stlport/stlport/using/cstring :
+ external/stlport/stlport/stl/_algobase.h :
+ external/stlport/stlport/climits external/stlport/stlport/stl/_pair.h :
+ external/stlport/stlport/stl/type_traits.h :
+ external/stlport/stlport/stl/type_manips.h :
+ external/stlport/stlport/stl/_move_construct_fwk.h :
+ external/stlport/stlport/stl/_iterator_base.h :
+ external/stlport/stlport/stl/_ptrs_specialize.h :
+ external/stlport/stlport/stl/_algobase.c :
+ external/stlport/stlport/stl/_function_base.h :
+ external/stlport/stlport/stl/_iterator.h :
+ external/stlport/stlport/stl/_new.h bionic/libstdc++/include/new :
+ external/stlport/stlport/cstddef bionic/libstdc++/include/cstddef :
+ external/stlport/stlport/stl/_cstdio.h :
+ external/stlport/stlport/stl/_construct.h :
+ external/stlport/stlport/stl/_alloc.c :
+ external/stlport/stlport/stl/_string_fwd.h :
+ external/stlport/stlport/stl/_iosfwd.h :
+ external/stlport/stlport/stl/char_traits.h :
+ external/stlport/stlport/stl/_cwchar.h :
+ bionic/libc/include/../include/wchar.h :
+ external/stlport/stlport/stl/_mbstate_t.h :
+ external/stlport/stlport/stl/_uninitialized.h :
+ external/stlport/stlport/stl/_string_base.h :
+ external/stlport/stlport/stl/_string_npos.h :
+ external/stlport/stlport/stl/_string_operators.h :
+ external/stlport/stlport/stl/_string.c :
+ external/stlport/stlport/stl/_ctraits_fns.h :
+ external/stlport/stlport/stl/_function.h :
+ external/stlport/stlport/stl/_function_adaptors.h :
+ external/stlport/stlport/stl/_range_errors.h :
+ external/stlport/stlport/stl/_string_hash.h :
+ external/stlport/stlport/stl/_hash_fun.h :
+ external/stlport/stlport/stl/_string_io.h :
+ external/stlport/stlport/stl/_ostream.h :
+ external/stlport/stlport/stl/_ios.h :
+ external/stlport/stlport/stl/_ios_base.h :
+ external/stlport/stlport/stl/_stdexcept_base.h :
+ external/stlport/stlport/stl/_exception.h :
+ external/stlport/stlport/stl/_locale.h :
+ external/stlport/stlport/stl/_threads.h :
+ external/stlport/stlport/stl/_threads.c :
+ external/stlport/stlport/stl/_ctime.h :
+ external/stlport/stlport/stl/_facets_fwd.h :
+ external/stlport/stlport/stl/_ctype.h :
+ external/stlport/stlport/stl/c_locale.h :
+ external/stlport/stlport/stl/_numpunct.h :
+ external/stlport/stlport/stl/_ios.c :
+ external/stlport/stlport/stl/_streambuf.h :
+ external/stlport/stlport/stl/_streambuf.c :
+ external/stlport/stlport/stl/_ostreambuf_iterator.h :
+ external/stlport/stlport/stl/_ostream.c :
+ external/stlport/stlport/stl/_num_put.h :
+ external/stlport/stlport/stl/_iostream_string.h :
+ external/stlport/stlport/stl/_num_put.c :
+ external/stlport/stlport/stl/_limits.h external/stlport/stlport/cfloat :
+ external/stlport/stlport/float.h :
+ prebuilt/darwin-x86/toolchain/arm-linux-androideabi-4.4.x/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/../include/float.h :
+ external/stlport/stlport/stl/_limits.c :
+ external/stlport/stlport/stl/_istream.h :
+ external/stlport/stlport/stl/_istreambuf_iterator.h :
+ external/stlport/stlport/stl/_istream.c :
+ external/stlport/stlport/stl/_num_get.h :
+ external/stlport/stlport/stl/_num_get.c :
+ external/stlport/stlport/stl/_string_io.c dalvik/vm/Bits.h :
+ dalvik/vm/BitVector.h dalvik/libdex/SysUtil.h :
+ dalvik/libdex/DexDebugInfo.h dalvik/libdex/DexFile.h dalvik/vm/Common.h :
+ dalvik/libdex/DexFile.h dalvik/libdex/DexProto.h dalvik/libdex/DexUtf.h :
+ dalvik/libdex/ZipArchive.h dalvik/libdex/SysUtil.h dalvik/vm/DvmDex.h :
+ dalvik/vm/RawDexFile.h dalvik/vm/Sync.h dalvik/vm/oo/Object.h :
+ dalvik/vm/Atomic.h system/core/include/cutils/atomic.h :
+ system/core/include/cutils/atomic-inline.h :
+ system/core/include/cutils/atomic-arm.h :
+ bionic/libc/arch-arm/include/machine/cpu-features.h dalvik/vm/Native.h :
+ dalvik/vm/native/InternalNative.h dalvik/vm/DalvikVersion.h :
+ dalvik/vm/Debugger.h dalvik/vm/jdwp/Jdwp.h :
+ dalvik/vm/jdwp/JdwpConstants.h dalvik/vm/jdwp/ExpandBuf.h :
+ dalvik/vm/Common.h dalvik/vm/Bits.h dalvik/vm/Profile.h :
+ dalvik/vm/UtfString.h external/stlport/stlport/vector :
+ external/stlport/stlport/stl/_vector.h :
+ external/stlport/stlport/stl/_vector.c :
+ external/stlport/stlport/stl/_bvector.h :
+ external/stlport/stlport/stl/_relops_cont.h dalvik/vm/Intern.h :
+ dalvik/vm/ReferenceTable.h dalvik/vm/IndirectRefTable.h :
+ dalvik/vm/AtomicCache.h dalvik/vm/Thread.h :
+ dalvik/libnativehelper/include/nativehelper/jni.h :
+ dalvik/vm/interp/InterpState.h external/stlport/stlport/errno.h :
+ bionic/libc/include/../include/errno.h :
+ bionic/libc/kernel/common/linux/errno.h :
+ bionic/libc/kernel/arch-arm/asm/errno.h :
+ bionic/libc/kernel/common/asm-generic/errno.h :
+ bionic/libc/kernel/common/asm-generic/errno-base.h :
+ system/core/include/cutils/sched_policy.h dalvik/vm/Ddm.h :
+ dalvik/vm/Hash.h dalvik/vm/interp/Stack.h dalvik/vm/oo/Class.h :
+ dalvik/vm/oo/Resolve.h dalvik/vm/oo/Array.h dalvik/vm/Exception.h :
+ dalvik/vm/alloc/Alloc.h dalvik/vm/alloc/CardTable.h :
+ dalvik/vm/alloc/HeapDebug.h dalvik/vm/alloc/WriteBarrier.h :
+ dalvik/vm/oo/AccessCheck.h dalvik/vm/JarFile.h dalvik/vm/SignalCatcher.h :
+ dalvik/vm/StdioConverter.h dalvik/vm/JniInternal.h :
+ dalvik/vm/LinearAlloc.h dalvik/vm/analysis/DexVerify.h :
+ dalvik/vm/analysis/DexPrepare.h dalvik/vm/analysis/RegisterMap.h :
+ dalvik/vm/analysis/VerifySubs.h dalvik/vm/analysis/CodeVerify.h :
+ dalvik/vm/analysis/VfyBasicBlock.h dalvik/vm/PointerSet.h :
+ dalvik/vm/Init.h dalvik/libdex/DexOpcodes.h dalvik/libdex/InstrUtils.h :
+ dalvik/libdex/DexOpcodes.h dalvik/vm/AllocTracker.h :
+ dalvik/vm/PointerSet.h dalvik/vm/compiler/Compiler.h :
+ external/stlport/stlport/setjmp.h :
+ bionic/libc/include/../include/setjmp.h :
+ bionic/libc/arch-arm/include/machine/setjmp.h dalvik/vm/Thread.h :
+ dalvik/vm/Globals.h dalvik/vm/reflect/Reflect.h dalvik/vm/oo/TypeCheck.h :
+ dalvik/vm/Atomic.h dalvik/vm/interp/Interp.h dalvik/vm/InlineNative.h :
+ dalvik/vm/oo/ObjectInlines.h frameworks/base/include/utils/Log.h :
+ frameworks/base/include/android_runtime/AndroidRuntime.h :
+ frameworks/base/include/utils/Errors.h :
+ frameworks/base/include/binder/IBinder.h :
+ frameworks/base/include/utils/RefBase.h :
+ frameworks/base/include/utils/StrongPointer.h :
+ frameworks/base/include/utils/String16.h :
+ frameworks/base/include/utils/SharedBuffer.h :
+ frameworks/base/include/utils/Unicode.h :
+ frameworks/base/include/utils/Vector.h external/stlport/stlport/new :
+ frameworks/base/include/utils/VectorImpl.h :
+ frameworks/base/include/utils/TypeHelpers.h :
+ frameworks/base/include/utils/String8.h :
+ frameworks/base/include/utils/threads.h :
+ system/core/include/system/graphics.h :
+ frameworks/base/include/utils/Timers.h :
+ dalvik/libnativehelper/include/nativehelper/jni.h :
+ bionic/libc/include/sys/mman.h bionic/libc/kernel/arch-arm/asm/mman.h :
+ bionic/libc/kernel/common/asm-generic/mman.h :
+ bionic/libc/kernel/arch-arm/asm/page.h :
+ system/core/include/cutils/properties.h bionic/libc/include/dlfcn.h :
+ frameworks/base/cmds/dexposed_dalvik/dexposed_offsets.h :
+ dalvik/vm/native/InternalNativePriv.h :
