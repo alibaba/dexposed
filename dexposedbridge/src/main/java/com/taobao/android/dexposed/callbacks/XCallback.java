@@ -20,8 +20,8 @@ package com.taobao.android.dexposed.callbacks;
 
 import java.io.Serializable;
 
-import com.taobao.android.dexposed.XposedBridge;
-import com.taobao.android.dexposed.XposedBridge.CopyOnWriteSortedSet;
+import com.taobao.android.dexposed.DexposedBridge;
+import com.taobao.android.dexposed.DexposedBridge.CopyOnWriteSortedSet;
 
 import android.os.Bundle;
 
@@ -87,7 +87,7 @@ public abstract class XCallback implements Comparable<XCallback> {
 		for (int i = 0; i < param.callbacks.length; i++) {
 			try {
 				((XCallback) param.callbacks[i]).call(param);
-			} catch (Throwable t) { XposedBridge.log(t); }
+			} catch (Throwable t) { DexposedBridge.log(t); }
 		}
 	}
 	

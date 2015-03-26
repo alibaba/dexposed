@@ -43,7 +43,7 @@ import com.taobao.android.dexposed.XC_MethodReplacement.XC_MethodKeepReplacement
 import com.taobao.android.dexposed.XposedHelpers.InvocationTargetError;
 
 
-public final class XposedBridge {
+public final class DexposedBridge {
 
 	private static final int RUNTIME_DALVIK = 1;
 	private static final int RUNTIME_ART = 2;
@@ -112,7 +112,7 @@ public final class XposedBridge {
 	/**
 	 * Log the stack trace
 	 * @param t The Throwable object for the stacktrace
-	 * @see XposedBridge#log(String)
+	 * @see DexposedBridge#log(String)
 	 */
 	public synchronized static void log(Throwable t) {
 		Log.i("Xposed", Log.getStackTraceString(t));
@@ -253,7 +253,7 @@ public final class XposedBridge {
 			try {
 				((XC_MethodHook) callbacksSnapshot[beforeIdx]).beforeHookedMethod(param);
 			} catch (Throwable t) {
-				XposedBridge.log(t);
+				DexposedBridge.log(t);
 
 				// reset result (ignoring what the unexpectedly exiting callback did)
 				param.setResult(null);
@@ -287,7 +287,7 @@ public final class XposedBridge {
 			try {
 				((XC_MethodHook) callbacksSnapshot[afterIdx]).afterHookedMethod(param);
 			} catch (Throwable t) {
-				XposedBridge.log(t);
+				DexposedBridge.log(t);
 
 				// reset to last result (ignoring what the unexpectedly exiting callback did)
 				if (lastThrowable == null)
