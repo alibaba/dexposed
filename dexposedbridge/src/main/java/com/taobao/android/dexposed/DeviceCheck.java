@@ -138,8 +138,7 @@ public class DeviceCheck {
 			if (isCheckedDeviceSupport)
 				return isDeviceSupportable;
 
-			if (isDalvikMode() && isSupportSDKVersion() && !isX86CPU()
-					&& !isYunOS()) {
+			if (!isX86CPU() && !isYunOS()) {
 				isDeviceSupportable = true;
 			} else {
 				isDeviceSupportable = false;
