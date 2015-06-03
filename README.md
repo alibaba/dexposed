@@ -41,7 +41,7 @@ Insert the following line into the initialization phase of your app, as early as
 
         @Override public void onCreate() {        
             // Check whether current device is supported (also initialize Dexposed framework if not yet)
-            if (XposedBridge.canDexposed(this)) {
+            if (DexposedBridge.canDexposed(this)) {
                 // Use Dexposed to kick off AOP stuffs.
                 ...
             }
@@ -59,7 +59,7 @@ There are three injection points for a given method: *before*, *after*, *replace
 Example 1: Attach a piece of code before and after all occurrences of `Activity.onCreate(Bundle)`.
 
         // Target class, method with parameter types, followed by the hook callback (XC_MethodHook).
-		XposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
         
             // To be invoked before Activity.onCreate().
 			@Override protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -85,7 +85,7 @@ Example 1: Attach a piece of code before and after all occurrences of `Activity.
 				
 Example 2: Replace the original body of the target method.
 
-		XposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
+		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
 		
 			@Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 				// Re-writing the method logic outside the original method context is a bit tricky but still viable.
