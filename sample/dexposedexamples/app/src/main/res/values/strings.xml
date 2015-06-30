@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">dexposed sample</string>
+    <string name="dexposed">Hi, dexposed!</string>
+    <string name="hook_log">Hook system log</string>
+    <string name="hook_Choreographer">Hook Choreographer</string>
+    <string name="log_content">The log content</string>
+    <string name="run_patch_apk">Run patch apk</string>
+
+</resources>

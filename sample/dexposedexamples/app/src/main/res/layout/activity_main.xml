@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/hello_world"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:text="@string/dexposed" />
+
+    <Button
+        android:id="@+id/hook_log_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hello_world"
+        android:layout_below="@+id/hello_world"
+        android:layout_marginTop="22dp"
+        android:text="@string/hook_log"
+        android:onClick="hookSystemLog" />
+    
+     <TextView
+        android:id="@+id/log_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:textSize="16dp"
+        android:layout_alignLeft="@+id/hello_world"
+        android:layout_below="@+id/hook_log_button"
+        android:text="@string/log_content" />
+     
+     <Button
+        android:id="@+id/hook_choreographer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hello_world"
+        android:layout_below="@+id/log_content"
+        android:layout_marginTop="22dp"
+        android:text="@string/hook_Choreographer"
+        android:onClick="hookChoreographer" />
+     
+     <Button
+        android:id="@+id/run_patch_apk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hello_world"
+        android:layout_below="@+id/hook_choreographer_button"
+        android:layout_marginTop="22dp"
+        android:text="@string/run_patch_apk"
+        android:onClick="runPatchApk" />
+
+</RelativeLayout>
