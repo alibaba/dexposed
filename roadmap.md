@@ -27,7 +27,7 @@ Completed roadmap
 Future roadmap
 ------------
 1.2.0 (Maybe July 2015)
-	Support Art runtime
+	Support Art runtime.
 
 1.3.0 (Maybe Dec 2015)
 	Support Native code AOP hook.
