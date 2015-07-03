@@ -1,29 +1,25 @@
 libdexposed.so for Lollipop 
 -----------
-Due to ART's complexity, libdexposed.so for lollipop current now is only a trail version. **It's not stable**.
+Due to ART's complexity, libdexposed.so for lollipop is currently only a beta version. **Don't use it in production environment.**
 
-Faults
------------------
-* Some optimizations in the Ahead-of-Time-Compilation  make it hard to hook all methods. One example is that ART inlines "easy"/short methods into the caller, or places direct calls to the native entry point in the assembler code. Also, the code deduplication, may hooking one method could also hook other methods. It can't hook now.
-* The target, For example, TARGET_CPU_SMP=true (needed for multicore processors) didn't support. Now it only support "quick, 32-bits, arm".
-* Hooked methods are similar to proxy methods in many aspects. so we don't have to care about the stack layout ourself. A method is known to be "special" (i.e. a proxy or native method) didn't support.
-* It didn't compatible with android5.1 which have changed a lot from lollipop.
+Flaws
+-----
+* Some optimizations in the Ahead-of-Time compilation make it harder to hook all methods. One example is the inlined "easy" (short) methods. Another example is the direct call into the native entry point in the assembly code. Also, the code deduplication, may hooking one method could also hook other methods. It can't hook now.
+* Targets other than "quick, 32-bits, arm" are not supported yet. (TARGET_CPU_SMP=true for example)
+* Hooked methods are similar to proxy methods in many aspects. so we don't need to deal with the stack layout by ourselves. "Special" methods (i.e. proxy, native method) is not supported.
+* ART in Android 5.1 is not supported yet, due to huge code base changes since Lollipop.
 
-Future
------------
-Up to now, we still work to solve these faults. We think there is still a hope to resolved，although not easy.
+Current state
+-------------
+We are still working hard on eliminating the flaws. This page will be updated if progress has been made.
 
 Contribute
 ----------
 We are open to constructive contributions from the community, especially pull request
-and quality bug report. **Currently, the support for new Android Runtime (ART) is still
-in early beta stage, we value your help to test or improve the implementation.**
+and quality bug reports. We value your help to test or improve the implementation for ART.
 
 Dexposed is aimed to be lightweight, transparent and productive. All improvements with
-these principal in mind are welcome. At the same time, we are actively exploring more
-potentially valuable use-cases and building powerful tools based upon Dexposed. We're
-interested in any ideas expanding the use-cases and grateful for community developed
-tools on top of Dexposed.
+these principal in mind are welcome.
 
 Discuss
 ---------
