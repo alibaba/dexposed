@@ -22,6 +22,6 @@ package com.taobao.patch;
  */
 public interface IPatch {
 	
-	public abstract void handlePatch(PatchParam lpparam) throws Throwable;
+	void handlePatch(PatchParam lpparam) throws Throwable;
 	
 }
