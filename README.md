@@ -101,6 +101,10 @@ Dexposed can support all devices from 2.3 to Lollipop except Yunos and X86 proce
 
 It could say that its stability has been proved in our long term engineering practice.
 
+Stability
+----------
+Dexposed can support all devices from 2.3 to 4.4 except Yunos and X86 processor very stable.In current market situation, at least 90% devices are included. The stability has been proved in our long term product practice.
+
 Contribute
 ----------
 We are open to constructive contributions from the community, especially pull request
