@@ -106,14 +106,15 @@ Support
 Dexposed support all dalvik runtime arm architecture devices from Android 2.3 to 4.4 (no include 3.0). The stability has been proved in our long term product practice.
 
 Follow is support status.
-Runtime   Android Version  Support
-Dalvik    2.2              Not Test 
-Dalvik    2.3              Yes      
-Dalvik    3.0              No       
-Dalvik    4.0-4.4          Yes      
-ART       5.0              Testing  
-ART       5.1              No       
-ART       M                No       
+
+* Runtime   Android Version  Support
+* Dalvik    2.2              Not Test 
+* Dalvik    2.3              Yes      
+* Dalvik    3.0              No       
+* Dalvik    4.0-4.4          Yes      
+* ART       5.0              Testing  
+* ART       5.1              No       
+* ART       M                No       
 
 Contribute
 ----------
