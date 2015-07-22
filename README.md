@@ -96,11 +96,6 @@ Example 2: Replace the original body of the target method.
 		
 Checkout the `example` project to find out more.
 
-Compatibility & Stability
-Dexposed can support all devices from 2.3 to Lollipop except Yunos and X86 processor.In current market situation, at least 95% devices are included. Desposed can ensure compatible before loading.
-
-It could say that its stability has been proved in our long term engineering practice.
-
 Support
 ----------
 Dexposed support all dalvik runtime arm architecture devices from Android 2.3 to 4.4 (no include 3.0). The stability has been proved in our long term product practice.
