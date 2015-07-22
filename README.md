@@ -101,9 +101,19 @@ Dexposed can support all devices from 2.3 to Lollipop except Yunos and X86 proce
 
 It could say that its stability has been proved in our long term engineering practice.
 
-Stability
+Support
 ----------
-Dexposed can support all devices from 2.3 to 4.4 except Yunos and X86 processor very stable.In current market situation, at least 90% devices are included. The stability has been proved in our long term product practice.
+Dexposed support all dalvik runtime arm architecture devices from Android 2.3 to 4.4 (no include 3.0). The stability has been proved in our long term product practice.
+
+Follow is support status.
+| Runtime  | Android Version | Support  |
+| Dalvik   | 2.2             | Not Test |
+| Dalvik   | 2.3             | Yes      |
+| Dalvik   | 3.0             | No       |
+| Dalvik   | 4.0-4.4         | Yes      |
+| ART      | 5.0             | Testing  |
+| ART      | 5.1             | No       |
+| ART      | M               | No       |
 
 Contribute
 ----------
