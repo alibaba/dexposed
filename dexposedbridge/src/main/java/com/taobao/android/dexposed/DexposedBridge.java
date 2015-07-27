@@ -320,7 +320,7 @@ public final class DexposedBridge {
 		try {
 			if (android.os.Build.VERSION.SDK_INT == 10
 					|| android.os.Build.VERSION.SDK_INT == 9) {
-				System.loadLibrary("dexposed2.3");
+				System.loadLibrary("dexposed");
 			} else if (android.os.Build.VERSION.SDK_INT > 19){
 				System.loadLibrary("dexposed_l");
 			} else {
