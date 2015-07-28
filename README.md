@@ -26,28 +26,30 @@ Integration
 Directly add jar and two so files from dexposed and dexposedbridge to your project as compile libraries.
 
 Gradle dependency like following:
-
-	native_dependencies {
-	    artifact 'com.taobao.dexposed:dexposed_l:0.2+:armeabi'
-	    artifact 'com.taobao.dexposed:dexposed:0.2+:armeabi'
-	}
-	dependencies {
-	    compile files('libs/dexposedbridge.jar')
-	}
+```groovy
+native_dependencies {
+  artifact 'com.taobao.dexposed:dexposed_l:0.2+:armeabi'
+  artifact 'com.taobao.dexposed:dexposed:0.2+:armeabi'
+}
+dependencies {
+  compile files('libs/dexposedbridge.jar')
+}
+```
 
 Insert the following line into the initialization phase of your app, as early as possible:
-
-    public class MyApplication extends Application {
-
-        @Override public void onCreate() {        
-            // Check whether current device is supported (also initialize Dexposed framework if not yet)
-            if (DexposedBridge.canDexposed(this)) {
-                // Use Dexposed to kick off AOP stuffs.
-                ...
-            }
-        }
-        ...
+```java
+public class MyApplication extends Application {
+  @Override public void onCreate() {
+    // Check whether current device is supported (also initialize Dexposed framework if not yet)
+    if (DexposedBridge.canDexposed(this)) {
+      // Use Dexposed to kick off AOP stuffs.
+      // ...
     }
+  }
+
+  // ...
+}
+```
 
 It's done.
 
@@ -57,43 +59,42 @@ Basic usage
 There are three injection points for a given method: *before*, *after*, *replace*.
 
 Example 1: Attach a piece of code before and after all occurrences of `Activity.onCreate(Bundle)`.
+```java
+// Target class, method with parameter types, followed by the hook callback (XC_MethodHook).
+DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+  // To be invoked before Activity.onCreate().
+  @Override protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+    // "thisObject" keeps the reference to the instance of target class.
+    Activity instance = (Activity) param.thisObject;
 
-        // Target class, method with parameter types, followed by the hook callback (XC_MethodHook).
-		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
-        
-            // To be invoked before Activity.onCreate().
-			@Override protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-				// "thisObject" keeps the reference to the instance of target class.
-				Activity instance = (Activity) param.thisObject;
-        
-				// The array args include all the parameters.
-				Bundle bundle = (Bundle) param.args[0];
-				Intent intent = new Intent();
-				// XposedHelpers provide useful utility methods.
-				XposedHelpers.setObjectField(param.thisObject, "mIntent", intent);
-		
-				// Calling setResult() will bypass the original method body use the result as method return value directly.
-				if (bundle.containsKey("return"))
-					param.setResult(null);
-			}
-					
-			// To be invoked after Activity.onCreate()
-			@Override protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-		        XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
-			}
-		});
-				
+    // The array args include all the parameters.
+    Bundle bundle = (Bundle) param.args[0];
+    Intent intent = new Intent();
+    // XposedHelpers provide useful utility methods.
+    XposedHelpers.setObjectField(param.thisObject, "mIntent", intent);
+
+    // Calling setResult() will bypass the original method body use the result as method return value directly.
+    if (bundle.containsKey("return"))
+      param.setResult(null);
+  }
+
+  // To be invoked after Activity.onCreate()
+  @Override protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+    XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
+  }
+});
+```
+
 Example 2: Replace the original body of the target method.
+```java
+DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
+  @Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+    // Re-writing the method logic outside the original method context is a bit tricky but still viable.
+    // ...
+  }
+});
+```
 
-		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
-		
-			@Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-				// Re-writing the method logic outside the original method context is a bit tricky but still viable.
-				...
-			}
-
-		});
-		
 Checkout the `example` project to find out more.
 
 Support
