@@ -318,12 +318,10 @@ public final class DexposedBridge {
 	private static boolean loadDexposedLib(Context context) {
 		// load xposed lib for hook.
 		try {
-			if (android.os.Build.VERSION.SDK_INT == 10
-					|| android.os.Build.VERSION.SDK_INT == 9) {
-				System.loadLibrary("dexposed");
-			} else if (android.os.Build.VERSION.SDK_INT > 19){
+			if (android.os.Build.VERSION.SDK_INT > 19){
 				System.loadLibrary("dexposed_l");
-			} else {
+			} else if if (android.os.Build.VERSION.SDK_INT == 10
+					|| android.os.Build.VERSION.SDK_INT == 9 || android.os.Build.VERSION.SDK_INT > 14){
 				System.loadLibrary("dexposed");
 			}
 			return true;
