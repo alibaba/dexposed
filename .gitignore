@@ -3,7 +3,6 @@
 gen
 bin
 out
-target
 gen-external-apklibs
 /.classpath
 /.project
@@ -15,8 +14,10 @@ build
 .DS_Store
 unpacked-aar/
 dependencies.txt
-/dexposedbridge/local.properties
-/dexposedbridge/.idea
-/dexposedbridge/build
-/dexposedbridge/.gradle
-/dexposedbridge/.DS_Store
+/dexposed/local.properties
+/dexposed/.idea
+/dexposed/build
+/dexposed/.gradle
+/dexposed/.DS_Store
+/sample/dexposedexamples/.gradle
+/sample/dexposedexamples/local.properties

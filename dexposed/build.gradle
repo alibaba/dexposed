@@ -25,7 +25,7 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'dexposed'
 
-    publishedGroupId = 'com.taobao'
+    publishedGroupId = 'com.taobao.android'
     libraryName = 'dexposed'
     artifact = 'dexposed'
 
@@ -34,7 +34,7 @@ ext {
     siteUrl = 'https://github.com/alibaba/dexposed'
     gitUrl = 'https://github.com/alibaba/dexposed.git'
 
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.1.1'
 
     developerId = 'alibaba'
     developerName = 'hwjump'
