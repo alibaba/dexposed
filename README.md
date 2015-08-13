@@ -23,20 +23,19 @@ Typical use-cases
 
 Integration
 -----------
-Directly add jar and two so files from dexposed and dexposedbridge to your project as compile libraries.
+Directly add dexposed aar to your project as compile libraries, it contains two so files "libdexposed.so libdexposed_l.so" from 'dexposed' directory and dexposedbridge.jar 
 
 Gradle dependency like following:
 
-	native_dependencies {
-	    artifact 'com.taobao.dexposed:dexposed_l:0.2+:armeabi'
-	    artifact 'com.taobao.dexposed:dexposed:0.2+:armeabi'
-	}
+```groovy
 	dependencies {
-	    compile files('libs/dexposedbridge.jar')
+	    compile 'com.taobao:dexposed:0.1.0@aar'
 	}
+```
 
 Insert the following line into the initialization phase of your app, as early as possible:
 
+```java
     public class MyApplication extends Application {
 
         @Override public void onCreate() {        
@@ -48,6 +47,7 @@ Insert the following line into the initialization phase of your app, as early as
         }
         ...
     }
+```
 
 It's done.
 
@@ -58,6 +58,7 @@ There are three injection points for a given method: *before*, *after*, *replace
 
 Example 1: Attach a piece of code before and after all occurrences of `Activity.onCreate(Bundle)`.
 
+```java
         // Target class, method with parameter types, followed by the hook callback (XC_MethodHook).
 		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
         
@@ -82,9 +83,11 @@ Example 1: Attach a piece of code before and after all occurrences of `Activity.
 		        XposedHelpers.callMethod(param.thisObject, "sampleMethod", 2);
 			}
 		});
-				
+```
+
 Example 2: Replace the original body of the target method.
 
+```java
 		DexposedBridge.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodReplacement() {
 		
 			@Override protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
@@ -93,7 +96,8 @@ Example 2: Replace the original body of the target method.
 			}
 
 		});
-		
+```
+
 Checkout the `example` project to find out more.
 
 Support
