@@ -23,7 +23,7 @@ Typical use-cases
 
 Integration
 -----------
-Directly add dexposed aar to your project as compile libraries, it contains two so files "libdexposed.so libdexposed_l.so" from 'dexposed' directory and dexposedbridge.jar 
+Directly add dexposed aar to your project as compile libraries, it contains a jar file "dexposedbridge.jar" two so files "libdexposed.so libdexposed_l.so" from 'dexposed' directory.
 
 Gradle dependency like following:
 
