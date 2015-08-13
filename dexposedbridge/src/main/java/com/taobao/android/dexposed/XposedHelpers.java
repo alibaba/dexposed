@@ -262,7 +262,6 @@ public class XposedHelpers {
 	 * Look up a method in a class and set it to accessible. The result is cached.
 	 * This does not only look for exact matches, but for the closest match. 
 	 * If the method was not found, a {@link NoSuchMethodError} will be thrown.
-	 * @see MethodUtils#getMatchingAccessibleMethod
 	 */
 	public static Method findMethodBestMatch(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
 		StringBuilder sb = new StringBuilder(clazz.getName());
