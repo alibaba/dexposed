@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":dexposedbridge" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="dexposed" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":dexposed_dalvik" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="dexposed" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":dexposedbridge" />
+        <option name="GRADLE_PROJECT_PATH" value=":dexposed_dalvik" />
       </configuration>
     </facet>
     <facet type="android" name="Android">

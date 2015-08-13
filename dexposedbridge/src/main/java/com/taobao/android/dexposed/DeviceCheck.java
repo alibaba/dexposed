@@ -138,13 +138,13 @@ public class DeviceCheck {
 			if (isCheckedDeviceSupport)
 				return isDeviceSupportable;
 
-			if (!isX86CPU() && !isYunOS()) {
+			if (!isYunOS()) {
 				isDeviceSupportable = true;
 			} else {
 				isDeviceSupportable = false;
 			}
 		} finally {
-			Log.d("hotpatch", "device support is " + isDeviceSupportable + "checked" + isCheckedDeviceSupport);
+			Log.d("hotpatch", "device support is " + isDeviceSupportable + ",checked:" + isCheckedDeviceSupport);
 			isCheckedDeviceSupport = true;
 		}
 		return isDeviceSupportable;

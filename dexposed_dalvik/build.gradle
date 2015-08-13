@@ -1,0 +1,75 @@
+apply plugin: 'com.android.model.library'
+
+model{
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+        }
+    }
+
+    android.ndk {
+        moduleName = "dexposed"
+        cppFlags += ["-std=c++0x", "-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN"]
+        ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
+        stl = "stlport_static"
+
+        /**
+         *  include android source
+         *  ${android_source_dir} define at gradle.properties
+         */
+
+        // delvik
+        cppFlags  += "-I${android_source_dir}/dalvik".toString()
+        cppFlags  += "-I${android_source_dir}/dalvik/vm".toString()
+
+        // stlport
+        cppFlags  += "-I${android_source_dir}/external/stlport/stlport".toString()
+
+        // bionic
+        cppFlags  += "-I${android_source_dir}/bionic".toString()
+        cppFlags  += "-I${android_source_dir}/bionic/libstdc++/include".toString()
+
+        // system/core
+        cppFlags  += "-I${android_source_dir}/system/core/include".toString()
+
+        // frameworks/native
+        cppFlags  += "-I${android_source_dir}/frameworks/native/include".toString()
+
+        // frameworks/base
+        cppFlags  += "-I${android_source_dir}/frameworks/base/include".toString()
+
+        // libnativehelper
+        cppFlags  += "-I${android_source_dir}/libnativehelper/include".toString()
+
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        abiFilters += ["x86"]
+    }
+
+//    android.productFlavors {
+//        create("x86") {
+//            ndk.with {
+//                ldFlags += "-Lsrc/main/jniLibs/x86"
+//                abiFilters += ["x86"]
+//            }
+//
+//        }
+//    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.0'
+}
