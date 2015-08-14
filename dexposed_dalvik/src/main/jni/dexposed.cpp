@@ -24,10 +24,7 @@
 
 #include "dexposed.h"
 
-#include <utils/Log.h>
 #include <android_runtime/AndroidRuntime.h>
-
-#include <stdio.h>
 #include <sys/mman.h>
 #include <cutils/properties.h>
 #include <dlfcn.h>

@@ -17,6 +17,10 @@ model{
         release {
             minifyEnabled = false
             proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                cppFlags += ["-DNOALOG"]
+            }
         }
     }
 

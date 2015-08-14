@@ -34,21 +34,13 @@ extern "C" {
 }
 #endif
 #endif
-
 namespace android {
 
 #define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
 #define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 #define DEXPOSED_VERSION "51"
 
-#define NOALOG
-
-#ifndef NOALOG
-#define ALOGD LOGD
-#define ALOGE LOGE
-#define ALOGI LOGI
-#define ALOGV LOGV
-#else
+#ifdef NOALOG
 #define ALOGD
 #define ALOGE
 #define ALOGI
