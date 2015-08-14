@@ -30,7 +30,7 @@
 #include <entrypoints/entrypoint_utils.h>
 
 #include "quick_argument_visitor.cpp"
-#include "quick_arg_array.cpp"
+
 
 namespace art {
 
@@ -106,81 +106,78 @@ namespace art {
 		return reinterpret_cast<void*>(art_quick_dexposed_invoke_handler);
 	}
 
-	JValue dexposedCallHandler(ScopedObjectAccessAlreadyRunnable& soa,
-			const char* shorty, jobject rcvr_jobj, jmethodID method,
-			std::vector<jvalue>& args)
-	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
+	JValue InvokeXposedHandleHookedMethod(ScopedObjectAccessAlreadyRunnable& soa, const char* shorty,
+	                                    jobject rcvr_jobj, jmethodID method,
+	                                    std::vector<jvalue>& args)
+		SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
-		LOG(INFO) << "dexposed: >>> dexposedCallHandler";
+		LOG(INFO) << "dexposed: InvokeXposedHandleHookedMethod";
+		  // Build argument array possibly triggering GC.
+		  soa.Self()->AssertThreadSuspensionIsAllowable();
+		  jobjectArray args_jobj = NULL;
+		  const JValue zero;
+		  int32_t target_sdk_version = Runtime::Current()->GetTargetSdkVersion();
+		  // Do not create empty arrays unless needed to maintain Dalvik bug compatibility.
+		  if (args.size() > 0 || (target_sdk_version > 0 && target_sdk_version <= 21)) {
+		    args_jobj = soa.Env()->NewObjectArray(args.size(), WellKnownClasses::java_lang_Object, NULL);
+		    if (args_jobj == NULL) {
+		      CHECK(soa.Self()->IsExceptionPending());
+		      return zero;
+		    }
+		    for (size_t i = 0; i < args.size(); ++i) {
+		      if (shorty[i + 1] == 'L') {
+		        jobject val = args.at(i).l;
+		        soa.Env()->SetObjectArrayElement(args_jobj, i, val);
+		      } else {
+		        JValue jv;
+		        jv.SetJ(args.at(i).j);
+		        mirror::Object* val = BoxPrimitive(Primitive::GetType(shorty[i + 1]), jv);
+		        if (val == NULL) {
+		          CHECK(soa.Self()->IsExceptionPending());
+		          return zero;
+		        }
+		        soa.Decode<mirror::ObjectArray<mirror::Object>* >(args_jobj)->Set<false>(i, val);
+		      }
+		    }
+		  }
 
-		// Build argument array possibly triggering GC.
-		soa.Self()->AssertThreadSuspensionIsAllowable();
-		jobjectArray args_jobj = NULL;
-		const JValue zero;
-		int32_t target_sdk_version = Runtime::Current()->GetTargetSdkVersion();
-		// Do not create empty arrays unless needed to maintain Dalvik bug compatibility.
-		if (args.size() > 0
-				|| (target_sdk_version > 0 && target_sdk_version <= 21)) {
-			args_jobj = soa.Env()->NewObjectArray(args.size(),
-					WellKnownClasses::java_lang_Object, NULL);
-			if (args_jobj == NULL) {
-				CHECK(soa.Self()->IsExceptionPending());
-				return zero;
-			}
-			for (size_t i = 0; i < args.size(); ++i) {
-				if (shorty[i + 1] == 'L') {
-					jobject val = args.at(i).l;
-					soa.Env()->SetObjectArrayElement(args_jobj, i, val);
-				} else {
-					JValue jv;
-					jv.SetJ(args.at(i).j);
-					Object* val = BoxPrimitive(Primitive::GetType(shorty[i + 1]),
-							jv);
-					if (val == NULL) {
-						CHECK(soa.Self()->IsExceptionPending());
-						return zero;
-					}
-					soa.Decode<ObjectArray<Object>*>(args_jobj)->Set<false>(i, val);
-				}
-			}
-		}
-
-		DexposedHookInfo* hookInfo =
+	  const DexposedHookInfo* hookInfo =
 				(DexposedHookInfo*) (soa.DecodeMethod(method)->GetNativeMethod());
 
-		// Call DexposedBridge.handleHookedMethod(Member method, int originalMethodId, Object additionalInfoObj,
-		//                                      Object thisObject, Object[] args)
-		jvalue invocation_args[5];
-		invocation_args[0].l = hookInfo->reflectedMethod;
-		invocation_args[1].i = 0;
-		invocation_args[2].l = hookInfo->additionalInfo;
-		invocation_args[3].l = rcvr_jobj;
-		invocation_args[4].l = args_jobj;
-		jobject result = soa.Env()->CallStaticObjectMethodA(dexposed_class,
-				dexposed_handle_hooked_method, invocation_args);
+	  // Call XposedBridge.handleHookedMethod(Member method, int originalMethodId, Object additionalInfoObj,
+	  //                                      Object thisObject, Object[] args)
+	  jvalue invocation_args[5];
+	  invocation_args[0].l = hookInfo->reflectedMethod;
+	  invocation_args[1].i = 0;
+	  invocation_args[2].l = hookInfo->additionalInfo;
+	  invocation_args[3].l = rcvr_jobj;
+	  invocation_args[4].l = args_jobj;
+	  jobject result =
+	      soa.Env()->CallStaticObjectMethodA(dexposed_class,
+											dexposed_handle_hooked_method,
+	                                         invocation_args);
 
-		// Unbox the result if necessary and return it.
-		if (UNLIKELY(soa.Self()->IsExceptionPending())) {
-			return zero;
-		} else {
-			if (shorty[0] == 'V' || (shorty[0] == 'L' && result == NULL)) {
-				return zero;
-			}
-			StackHandleScope < 1 > hs(soa.Self());
-			MethodHelper mh_method(hs.NewHandle(soa.DecodeMethod(method)));
-			// This can cause thread suspension.
-			Object* rcvr = soa.Decode<Object*>(rcvr_jobj);
-			ThrowLocation throw_location(rcvr, mh_method.GetMethod(), -1);
-			Object* result_ref = soa.Decode<Object*>(result);
-			Class* result_type = mh_method.GetReturnType();
-			JValue result_unboxed;
-			if (!UnboxPrimitiveForResult(throw_location, result_ref, result_type,
-					&result_unboxed)) {
-				DCHECK(soa.Self()->IsExceptionPending());
-				return zero;
-			}
-			return result_unboxed;
-		}
+	  // Unbox the result if necessary and return it.
+	  if (UNLIKELY(soa.Self()->IsExceptionPending())) {
+	    return zero;
+	  } else {
+	    if (shorty[0] == 'V' || (shorty[0] == 'L' && result == NULL)) {
+	      return zero;
+	    }
+	    StackHandleScope<1> hs(soa.Self());
+	    MethodHelper mh_method(hs.NewHandle(soa.DecodeMethod(method)));
+	    // This can cause thread suspension.
+	    mirror::Object* rcvr = soa.Decode<mirror::Object*>(rcvr_jobj);
+	    ThrowLocation throw_location(rcvr, mh_method.GetMethod(), -1);
+	    mirror::Object* result_ref = soa.Decode<mirror::Object*>(result);
+	    mirror::Class* result_type = mh_method.GetReturnType();
+	    JValue result_unboxed;
+	    if (!UnboxPrimitiveForResult(throw_location, result_ref, result_type, &result_unboxed)) {
+	      DCHECK(soa.Self()->IsExceptionPending());
+	      return zero;
+	    }
+	    return result_unboxed;
+	  }
 	}
 
 	// Handler for invocation on proxy methods. On entry a frame will exist for the proxy object method
@@ -192,9 +189,13 @@ namespace art {
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
 		const bool is_static = proxy_method->IsStatic();
+
+		LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler " << is_static;
+
 		// Ensure we don't get thread suspension until the object arguments are safely in jobjects.
 		const char* old_cause = self->StartAssertNoThreadSuspension(
 				"Adding to IRT proxy object arguments");
+
 		// Register the top of the managed stack, making stack crawlable.
 		DCHECK_EQ(sp->AsMirrorPtr(), proxy_method) << PrettyMethod(proxy_method);
 		self->SetTopOfStack(sp, 0);
@@ -207,8 +208,7 @@ namespace art {
 		ScopedObjectAccessUnchecked soa(env);
 		ScopedJniEnvLocalRefState env_state(env);
 		// Create local ref. copies of proxy method and the receiver.
-		jobject rcvr_jobj =
-				is_static ? nullptr : soa.AddLocalReference < jobject > (receiver);
+		jobject rcvr_jobj = is_static ? nullptr : soa.AddLocalReference<jobject>(receiver);
 
 		// Placing arguments into args vector and remove the receiver.
 		ArtMethod* non_proxy_method = proxy_method->GetInterfaceMethodIfProxy();
@@ -216,157 +216,85 @@ namespace art {
 		std::vector < jvalue > args;
 		uint32_t shorty_len = 0;
 		const char* shorty = proxy_method->GetShorty(&shorty_len);
-		BuildQuickArgumentVisitor local_ref_visitor(sp, false, shorty, shorty_len,
-				&soa, &args);
 
-		local_ref_visitor.VisitArguments();
-		DCHECK_GT(args.size(), 0U) << PrettyMethod(proxy_method);
-		if (!is_static) {
-			args.erase(args.begin());
+		for(int i=0; i<shorty_len; ++i){
+			LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler " << "shorty[" << i << "]:" << shorty[i];
 		}
 
-		ArtMethod* mm = receiver->GetClass()->FindVirtualMethodForVirtualOrInterface(proxy_method);
+		BuildQuickArgumentVisitor local_ref_visitor(sp, is_static, shorty, shorty_len, &soa, &args);
+		local_ref_visitor.VisitArguments();
+		if (!is_static) {
+			DCHECK_GT(args.size(), 0U) << PrettyMethod(proxy_method);
+			args.erase(args.begin());
+		}
+		LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler args.size:" << args.size();
+	    jmethodID proxy_methodid = soa.EncodeMethod(proxy_method);
+	    self->EndAssertNoThreadSuspension(old_cause);
+	    JValue result = InvokeXposedHandleHookedMethod(soa, shorty, rcvr_jobj, proxy_methodid, args);
+	    local_ref_visitor.FixupReferences();
+	    return result.GetJ();
+	}
 
-		jmethodID proxy_methodid = soa.EncodeMethod(proxy_method);
-		self->EndAssertNoThreadSuspension(old_cause);
-		JValue result = dexposedCallHandler(soa, shorty, rcvr_jobj,
-				proxy_methodid, args);
-		local_ref_visitor.FixupReferences();
-		return result.GetJ();
+	static void EnableXposedHook(JNIEnv* env, ArtMethod* art_method, jobject additional_info)
+	  SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
+
+	  LOG(INFO) << "dexposed: >>> EnableXposedHook" << art_method << " " << PrettyMethod(art_method);
+	  if (dexposedIsHooked(art_method)) {
+		// Already hooked
+		return;
+	  }
+//	  else if (UNLIKELY(art_method->IsXposedOriginalMethod())) {
+//		// This should never happen
+//		ThrowIllegalArgumentException(nullptr, StringPrintf("Cannot hook the method backup: %s", PrettyMethod(art_method).c_str()).c_str());
+//		return;
+//	  }
+
+	  ScopedObjectAccess soa(env);
+
+	  // Create a backup of the ArtMethod object
+	  ArtMethod* backup_method = down_cast<ArtMethod*>(art_method->Clone(soa.Self()));
+	  // Set private flag to avoid virtual table lookups during invocation
+	  backup_method->SetAccessFlags(backup_method->GetAccessFlags() /*| kAccXposedOriginalMethod*/);
+	  // Create a Method/Constructor object for the backup ArtMethod object
+	  jobject reflect_method;
+	  if (art_method->IsConstructor()) {
+	    reflect_method = env->AllocObject(WellKnownClasses::java_lang_reflect_Constructor);
+	  } else {
+	    reflect_method = env->AllocObject(WellKnownClasses::java_lang_reflect_Method);
+	  }
+	  env->SetObjectField(reflect_method, WellKnownClasses::java_lang_reflect_AbstractMethod_artMethod,
+	      env->NewGlobalRef(soa.AddLocalReference<jobject>(backup_method)));
+	  // Save extra information in a separate structure, stored instead of the native method
+	  DexposedHookInfo* hookInfo = reinterpret_cast<DexposedHookInfo*>(calloc(1, sizeof(DexposedHookInfo)));
+	  hookInfo->reflectedMethod = env->NewGlobalRef(reflect_method);
+	  hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
+	  hookInfo->originalMethod = backup_method;
+	  art_method->SetNativeMethod(reinterpret_cast<uint8_t*>(hookInfo));
+
+	  art_method->SetEntryPointFromQuickCompiledCode(GetQuickDexposedInvokeHandler());
+//	  art_method->SetEntryPointFromInterpreter(art::artInterpreterToCompiledCodeBridge);
+	  // Adjust access flags
+	  art_method->SetAccessFlags((art_method->GetAccessFlags() & ~kAccNative) /*| kAccXposedHookedMethod*/);
 	}
 
 	static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(
 			JNIEnv* env, jclass, jobject java_method, jobject, jint,
 			jobject additional_info) {
 
-		LOG(INFO) << "dexposed: >>> hookMethodNative";
-
 		ScopedObjectAccess soa(env);
 		art::Thread* self = art::Thread::Current();
-		ArtMethod* method = ArtMethod::FromReflectedMethod(soa, java_method);
-		if (method == NULL) {
-			return;
-		}
-		if (method->IsStatic()) {
-			StackHandleScope < 2 > shs(art::Thread::Current());
-			Runtime::Current()->GetClassLinker()->EnsureInitialized(
-					shs.NewHandle(method->GetDeclaringClass()), true, true);
-		}
-		if (dexposedIsHooked(method)) {
-			return;
-		}
 
-		DexposedHookInfo* hookInfo = (DexposedHookInfo*) calloc(1,
-				sizeof(DexposedHookInfo));
+	    jobject javaArtMethod = env->GetObjectField(java_method,
+	            WellKnownClasses::java_lang_reflect_AbstractMethod_artMethod);
+	    ArtMethod* method = soa.Decode<mirror::ArtMethod*>(javaArtMethod);
 
-		ArtMethod* original_art_method =
-				Runtime::Current()->GetClassLinker()->AllocArtMethod(self);
-		memcpy(original_art_method, method, sizeof(ArtMethod));
-
-		jobject reflect_method;
-		if (method->IsConstructor()) {
-			reflect_method = env->AllocObject(WellKnownClasses::java_lang_reflect_Constructor);
-		} else {
-			reflect_method = env->AllocObject(WellKnownClasses::java_lang_reflect_Method);
-		}
-		env->SetObjectField(reflect_method,
-				WellKnownClasses::java_lang_reflect_AbstractMethod_artMethod,
-				env->NewGlobalRef(
-						soa.AddLocalReference < jobject > (original_art_method)));
-
-		hookInfo->reflectedMethod = env->NewGlobalRef(java_method);
-		hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
-		hookInfo->original_method = env->NewGlobalRef(reflect_method);
-
-		method->SetNativeMethod((uint8_t*) hookInfo);
-
-		method->SetEntryPointFromQuickCompiledCode(GetQuickDexposedInvokeHandler());
-
-		// Adjust access flags
-		method->SetAccessFlags((method->GetAccessFlags() & ~kAccNative));
+	    LOG(INFO) << "dexposed: >>> hookMethodNative " << method << " " << PrettyMethod(method);
+	    EnableXposedHook(env, method, additional_info);
 	}
 
 	static bool dexposedIsHooked(ArtMethod* method) {
 		return (method->GetEntryPointFromQuickCompiledCode())
 				== (void *) GetQuickDexposedInvokeHandler();
-	}
-
-	jobject InvokeDexposedMethod(const ScopedObjectAccessAlreadyRunnable& soa, jobject javaMethod,
-	                     jobject javaReceiver, jobject javaArgs, bool accessible) {
-	  // We want to make sure that the stack is not within a small distance from the
-	  // protected region in case we are calling into a leaf function whose stack
-	  // check has been elided.
-	  if (UNLIKELY(__builtin_frame_address(0) <
-	               soa.Self()->GetStackEndForInterpreter(true))) {
-	    ThrowStackOverflowError(soa.Self());
-	    return nullptr;
-	  }
-	  mirror::ArtMethod* m = mirror::ArtMethod::FromReflectedMethod(soa, javaMethod);
-
-	  mirror::Class* declaring_class = m->GetDeclaringClass();
-	  if (UNLIKELY(!declaring_class->IsInitialized())) {
-	    StackHandleScope<1> hs(soa.Self());
-	    Handle<mirror::Class> h_class(hs.NewHandle(declaring_class));
-	    if (!Runtime::Current()->GetClassLinker()->EnsureInitialized(h_class, true, true)) {
-	      return nullptr;
-	    }
-	    declaring_class = h_class.Get();
-	  }
-	  mirror::Object* receiver = nullptr;
-	  if (!m->IsStatic()) {
-	    // Check that the receiver is non-null and an instance of the field's declaring class.
-	    receiver = soa.Decode<mirror::Object*>(javaReceiver);
-	    if (!VerifyObjectIsClass(receiver, declaring_class)) {
-	      return NULL;
-	    }
-
-	    // Find the actual implementation of the virtual method.
-//	    m = receiver->GetClass()->FindVirtualMethodForVirtualOrInterface(m);
-	  }
-	  // Get our arrays of arguments and their types, and check they're the same size.
-	  mirror::ObjectArray<mirror::Object>* objects =
-	      soa.Decode<mirror::ObjectArray<mirror::Object>*>(javaArgs);
-	  const DexFile::TypeList* classes = m->GetParameterTypeList();
-	  uint32_t classes_size = (classes == nullptr) ? 0 : classes->Size();
-	  uint32_t arg_count = (objects != nullptr) ? objects->GetLength() : 0;
-	  if (arg_count != classes_size) {
-	    ThrowIllegalArgumentException(NULL,
-	                                  StringPrintf("Wrong number of arguments; expected %d, got %d",
-	                                               classes_size, arg_count).c_str());
-	    return NULL;
-	  }
-
-	  // If method is not set to be accessible, verify it can be accessed by the caller.
-	  if (!accessible && !VerifyAccess(soa.Self(), receiver, declaring_class, m->GetAccessFlags())) {
-	    ThrowIllegalAccessException(nullptr, StringPrintf("Cannot access method: %s",
-	                                                      PrettyMethod(m).c_str()).c_str());
-	    return nullptr;
-	  }
-	  // Invoke the method.
-	  JValue result;
-	  uint32_t shorty_len = 0;
-	  const char* shorty = m->GetShorty(&shorty_len);
-	  art::ArgArray arg_array(shorty, shorty_len);
-	  StackHandleScope<1> hs(soa.Self());
-	  MethodHelper mh(hs.NewHandle(m));
-	  if (!arg_array.BuildArgArrayFromObjectArray(soa, receiver, objects, mh)) {
-	    CHECK(soa.Self()->IsExceptionPending());
-	    return nullptr;
-	  }
-	  InvokeWithArgArray(soa, m, &arg_array, &result, shorty);
-	  // Wrap any exception with "Ljava/lang/reflect/InvocationTargetException;" and return early.
-	  if (soa.Self()->IsExceptionPending()) {
-	    jthrowable th = soa.Env()->ExceptionOccurred();
-	    soa.Env()->ExceptionClear();
-	    jclass exception_class = soa.Env()->FindClass("java/lang/reflect/InvocationTargetException");
-	    jmethodID mid = soa.Env()->GetMethodID(exception_class, "<init>", "(Ljava/lang/Throwable;)V");
-	    jobject exception_instance = soa.Env()->NewObject(exception_class, mid, th);
-	    soa.Env()->Throw(reinterpret_cast<jthrowable>(exception_instance));
-	    return NULL;
-	  }
-	  // Box if necessary and return.
-	  return soa.AddLocalReference<jobject>(BoxPrimitive(mh.GetReturnType()->GetPrimitiveType(),
-	                                                     result));
 	}
 
 	extern "C" jobject com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative(
@@ -377,12 +305,11 @@ namespace art {
 		LOG(INFO) << "dexposed: >>> invokeOriginalMethodNative";
 
 		ScopedObjectAccess soa(env);
-
-		ArtMethod* method = ArtMethod::FromReflectedMethod(soa, java_method);
-
-		DexposedHookInfo* hookInfo = (DexposedHookInfo*) method->GetNativeMethod();
-
-		return InvokeDexposedMethod(soa, hookInfo->original_method, thiz, args, true);
+#if PLATFORM_SDK_VERSION >= 21
+		return art::InvokeMethod(soa, java_method, thiz, args, true);
+#else
+		return art::InvokeMethod(soa, java_method, thiz, args);
+#endif
 	}
 
 	extern "C" jobject com_taobao_android_dexposed_DexposedBridge_invokeSuperNative(
@@ -391,7 +318,7 @@ namespace art {
 
 	SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
 
-		LOG(INFO) << "dexposed: >>> invokeNonVirtualNative";
+		LOG(INFO) << "dexposed: >>> invokeSuperNative";
 
 		ScopedObjectAccess soa(env);
 		ArtMethod* method = ArtMethod::FromReflectedMethod(soa, java_method);
@@ -404,8 +331,11 @@ namespace art {
 						WellKnownClasses::java_lang_reflect_AbstractMethod_artMethod,
 						env->NewGlobalRef(
 								soa.AddLocalReference < jobject > (mm)));
-
-		return InvokeDexposedMethod(soa, reflect_method, thiz, args, true);
+#if PLATFORM_SDK_VERSION >= 21
+		return art::InvokeMethod(soa, reflect_method, thiz, args, true);
+#else
+		return art::InvokeMethod(soa, reflect_method, thiz, args);
+#endif
 	}
 
 	static const JNINativeMethod dexposedMethods[] =
