@@ -357,7 +357,9 @@ static void replaceAsm(uintptr_t function, unsigned const char* newCode, size_t 
     memcpy((void*)function, newCode, len);
     mprotect((void*)pageStart, pageProtectSize, PROT_READ | PROT_EXEC);
 
+#ifdef __arm__
     __clear_cache((void*)function, (void*)(function+len));
+#endif
 }
 
 static void patchReturnTrue(uintptr_t function) {
