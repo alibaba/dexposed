@@ -1,0 +1,66 @@
+apply plugin: 'com.android.model.library'
+
+model{
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+        }
+    }
+
+    android.ndk {
+        moduleName = "dexposed_l"
+
+        toolchain = "gcc"
+        toolchainVersion = "4.9"
+
+        // 确认几个参数的具体值, 或者可能不同的值支持不同的版本
+        CFlags += ["-D_USING_LIBCXX"]
+        cppFlags += ["-std=c++11","-nostdinc++", "-DPLATFORM_SDK_VERSION=19", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_6__", "-DIMT_SIZE=32"]
+        ldLibs += ["cutils","utils", "log", "c++", "art", "m", "c", "atomic", "art_quick_dexposed_invoke_handler"]
+        stl = "gnustl_static"
+
+        ldFlags += "-nodefaultlibs"
+
+//        ldFlags += "-Lsrc/main/jniLibs/x86"
+//        abiFilters += ["x86"]
+
+        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
+        abiFilters += ["armeabi-v7a"]
+
+        /**
+         *  include android source
+         *  ${android_source_dir} define at gradle.properties
+         */
+        cppFlags  += "-I${android_source_dir}/art".toString()
+        cppFlags  += "-I${android_source_dir}/art/runtime".toString()
+        cppFlags  += "-I${android_source_dir}/art/runtime/entrypoints/quick".toString()
+        cppFlags  += "-I${android_source_dir}/external/gtest/include".toString()
+        cppFlags  += "-I${android_source_dir}/external/valgrind/main".toString()
+        cppFlags  += "-I${android_source_dir}/external/valgrind/main/include".toString()
+        cppFlags  += "-I${android_source_dir}/external/libcxx/include".toString()
+        cppFlags  += "-I${android_source_dir}/system/core/include".toString()
+        cppFlags  += "-I${android_source_dir}/frameworks/base/include".toString()
+        cppFlags  += "-I${android_source_dir}/frameworks/native/include".toString()
+        cppFlags  += "-I${android_source_dir}/libnativehelper/include".toString()
+        cppFlags  += "-I${android_source_dir}/libnativehelper/include/nativehelper".toString()
+
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.0'
+}

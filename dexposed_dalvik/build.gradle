@@ -22,51 +22,32 @@ model{
 
     android.ndk {
         moduleName = "dexposed"
-        cppFlags += ["-std=c++0x", "-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN"]
+
+        cppFlags += ["-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_6__"]
         ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
         stl = "stlport_static"
+
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        abiFilters += ["x86"]
+
+        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
+        abiFilters += ["armeabi-v7a"]
 
         /**
          *  include android source
          *  ${android_source_dir} define at gradle.properties
          */
-
-        // delvik
         cppFlags  += "-I${android_source_dir}/dalvik".toString()
         cppFlags  += "-I${android_source_dir}/dalvik/vm".toString()
-
-        // stlport
         cppFlags  += "-I${android_source_dir}/external/stlport/stlport".toString()
-
-        // bionic
         cppFlags  += "-I${android_source_dir}/bionic".toString()
         cppFlags  += "-I${android_source_dir}/bionic/libstdc++/include".toString()
-
-        // system/core
         cppFlags  += "-I${android_source_dir}/system/core/include".toString()
-
-        // frameworks/native
         cppFlags  += "-I${android_source_dir}/frameworks/native/include".toString()
-
-        // frameworks/base
         cppFlags  += "-I${android_source_dir}/frameworks/base/include".toString()
-
-        // libnativehelper
         cppFlags  += "-I${android_source_dir}/libnativehelper/include".toString()
 
-        ldFlags += "-Lsrc/main/jniLibs/x86"
-        abiFilters += ["x86"]
     }
-
-//    android.productFlavors {
-//        create("x86") {
-//            ndk.with {
-//                ldFlags += "-Lsrc/main/jniLibs/x86"
-//                abiFilters += ["x86"]
-//            }
-//
-//        }
-//    }
 }
 
 dependencies {
