@@ -41,19 +41,19 @@ namespace android {
 #define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 #define DEXPOSED_VERSION "51"
 
-////#define NOALOG
-//
-//#ifndef NOALOG
-//#define ALOGD LOGD
-//#define ALOGE LOGE
-//#define ALOGI LOGI
-//#define ALOGV LOGV
-//#else
-//#define ALOGD
-//#define ALOGE
-//#define ALOGI
-//#define ALOGV
-//#endif
+#define NOALOG
+
+#ifndef NOALOG
+#define ALOGD LOGD
+#define ALOGE LOGE
+#define ALOGI LOGI
+#define ALOGV LOGV
+#else
+#define ALOGD
+#define ALOGE
+#define ALOGI
+#define ALOGV
+#endif
 
 
 struct DexposedHookInfo {
