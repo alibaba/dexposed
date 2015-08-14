@@ -23,11 +23,9 @@
 #define LOG_TAG "Dexposed"
 
 #include "dexposed.h"
-
-//#include <utils/Log.h>
+#include "utils/Log.h"
 #include <android_runtime/AndroidRuntime.h>
 
-//#include <stdio.h>
 #include <sys/mman.h>
 #include <cutils/properties.h>
 #include <dlfcn.h>
@@ -165,6 +163,8 @@ bool dexposedOnVmCreated(JNIEnv* env, const char* className) {
     keepLoadingDexposed = keepLoadingDexposed && dexposedInitMemberOffsets(env);
     if (!keepLoadingDexposed)
         return false;
+
+    ALOGI("=================================\n");
 
     // disable some access checks
     patchReturnTrue((uintptr_t) &dvmCheckClassAccess);
@@ -358,7 +358,8 @@ static void replaceAsm(uintptr_t function, unsigned const char* newCode, size_t 
     mprotect((void*)pageStart, pageProtectSize, PROT_READ | PROT_EXEC);
 
 #ifdef __arm__
-//    __clear_cache((void*)function, (void*)(function+len));
+    ALOGE("call __clear_cache");
+    __clear_cache((void*)function, (void*)(function+len));
 #endif
 
 }
