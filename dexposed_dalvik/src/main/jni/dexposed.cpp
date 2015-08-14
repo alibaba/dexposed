@@ -122,8 +122,8 @@ void dexposedInfo() {
     property_get("ro.build.display.id", rom, "n/a");
     property_get("ro.build.fingerprint", fingerprint, "n/a");
 
-    
-    LOGI("Starting Dexposed binary version %s, compiled for SDK %d\n", DEXPOSED_VERSION, PLATFORM_SDK_VERSION);
+
+    ALOGI("Starting Dexposed binary version %s, compiled for SDK %d\n", DEXPOSED_VERSION, PLATFORM_SDK_VERSION);
     ALOGD("Phone: %s (%s), Android version %s (SDK %s)\n", model, manufacturer, release, sdk);
     ALOGD("ROM: %s\n", rom);
     ALOGD("Build fingerprint: %s\n", fingerprint);
@@ -221,7 +221,7 @@ static bool dexposedInitMemberOffsets(JNIEnv* env) {
     // detect offset of ArrayObject->contents
     jintArray dummyArray = env->NewIntArray(1);
     if (dummyArray == NULL) {
-        LOGE("Could allocate int array for testing");
+        ALOGE("Could allocate int array for testing");
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
         return false;
@@ -233,7 +233,7 @@ static bool dexposedInitMemberOffsets(JNIEnv* env) {
     env->DeleteLocalRef(dummyArray);
 
     if (arrayContentsOffset < 12 || arrayContentsOffset > 128) {
-        LOGE("Detected strange offset %d of ArrayObject->contents", arrayContentsOffset);
+        ALOGE("Detected strange offset %d of ArrayObject->contents", arrayContentsOffset);
         return false;
     }
     return true;
@@ -394,7 +394,7 @@ static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* en
     dexposedHandleHookedMethod = (Method*) env->GetStaticMethodID(dexposedClass, "handleHookedMethod",
         "(Ljava/lang/reflect/Member;ILjava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     if (dexposedHandleHookedMethod == NULL) {
-        LOGE("ERROR: could not find method %s.handleHookedMethod(Member, int, Object, Object, Object[])\n", DEXPOSED_CLASS);
+        ALOGE("ERROR: could not find method %s.handleHookedMethod(Member, int, Object, Object, Object[])\n", DEXPOSED_CLASS);
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
         keepLoadingDexposed = false;
@@ -404,7 +404,7 @@ static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* en
     Method* dexposedInvokeOriginalMethodNative = (Method*) env->GetStaticMethodID(dexposedClass, "invokeOriginalMethodNative",
         "(Ljava/lang/reflect/Member;I[Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
     if (dexposedInvokeOriginalMethodNative == NULL) {
-        LOGE("ERROR: could not find method %s.invokeOriginalMethodNative(Member, int, Class[], Class, Object, Object[])\n", DEXPOSED_CLASS);
+        ALOGE("ERROR: could not find method %s.invokeOriginalMethodNative(Member, int, Class[], Class, Object, Object[])\n", DEXPOSED_CLASS);
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
         keepLoadingDexposed = false;
@@ -415,7 +415,7 @@ static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* en
     Method* dexposedInvokeSuperNative = (Method*) env->GetStaticMethodID(dexposedClass, "invokeSuperNative",
             "(Ljava/lang/Object;[Ljava/lang/Object;Ljava/lang/reflect/Member;Ljava/lang/Class;[Ljava/lang/Class;Ljava/lang/Class;I)Ljava/lang/Object;");
 	if (dexposedInvokeSuperNative == NULL) {
-		LOGE("ERROR: could not find method %s.dexposedInvokeNonVirtual(Object, Object[], Class, Class[], Class, int, boolean)\n", DEXPOSED_CLASS);
+        ALOGE("ERROR: could not find method %s.dexposedInvokeNonVirtual(Object, Object[], Class, Class[], Class, int, boolean)\n", DEXPOSED_CLASS);
 		dvmLogExceptionStackTrace();
 		env->ExceptionClear();
 		keepLoadingDexposed = false;
@@ -425,7 +425,7 @@ static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* en
 
     objectArrayClass = dvmFindArrayClass("[Ljava/lang/Object;", NULL);
     if (objectArrayClass == NULL) {
-        LOGE("Error while loading Object[] class");
+        ALOGE("Error while loading Object[] class");
         dvmLogExceptionStackTrace();
         env->ExceptionClear();
         keepLoadingDexposed = false;
