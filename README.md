@@ -29,7 +29,7 @@ Gradle dependency like following:
 
 ```groovy
 	dependencies {
-	    compile 'com.taobao:dexposed:0.1.0@aar'
+	    compile 'com.taobao.android:dexposed:0.1.1@aar'
 	}
 ```
 
