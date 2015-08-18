@@ -30,7 +30,7 @@ model{
         toolchain = "gcc"
         toolchainVersion = "4.9"
 
-        cppFlags += ["-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN"]
+        cppFlags += ["-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_7__"]
         ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
         stl = "stlport_static"
 

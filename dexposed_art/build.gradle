@@ -26,16 +26,17 @@ model{
         toolchain = "gcc"
         toolchainVersion = "4.9"
 
-        // 确认几个参数的具体值, 或者可能不同的值支持不同的版本
         CFlags += ["-D_USING_LIBCXX"]
-        cppFlags += ["-std=c++11","-nostdinc++", "-DPLATFORM_SDK_VERSION=19", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_6__", "-DIMT_SIZE=32"]
-        ldLibs += ["cutils","utils", "log", "c++", "art", "m", "c", "atomic", "art_quick_dexposed_invoke_handler"]
+
+        // 确认几个参数的具体值, 或者可能不同的值支持不同的版本
+        cppFlags += ["-std=c++11", "-nostdinc++", "-DHAVE_LITTLE_ENDIAN"]
+        ldLibs += ["cutils","utils", "log", "c++", "art", "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
         stl = "gnustl_static"
 
         ldFlags += "-nodefaultlibs"
 
-//        ldFlags += "-Lsrc/main/jniLibs/x86"
-//        abiFilters += ["x86"]
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        abiFilters += ["x86"]
 
         ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
         abiFilters += ["armeabi-v7a"]
@@ -44,18 +45,19 @@ model{
          *  include android source
          *  ${android_source_dir} define at gradle.properties
          */
-        cppFlags  += "-I${android_source_dir}/art".toString()
-        cppFlags  += "-I${android_source_dir}/art/runtime".toString()
-        cppFlags  += "-I${android_source_dir}/art/runtime/entrypoints/quick".toString()
-        cppFlags  += "-I${android_source_dir}/external/gtest/include".toString()
-        cppFlags  += "-I${android_source_dir}/external/valgrind/main".toString()
-        cppFlags  += "-I${android_source_dir}/external/valgrind/main/include".toString()
-        cppFlags  += "-I${android_source_dir}/external/libcxx/include".toString()
-        cppFlags  += "-I${android_source_dir}/system/core/include".toString()
-        cppFlags  += "-I${android_source_dir}/frameworks/base/include".toString()
-        cppFlags  += "-I${android_source_dir}/frameworks/native/include".toString()
-        cppFlags  += "-I${android_source_dir}/libnativehelper/include".toString()
-        cppFlags  += "-I${android_source_dir}/libnativehelper/include/nativehelper".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/art".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/art/runtime".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/art/runtime/arch/arm".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/art/runtime/entrypoints/quick".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/external/gtest/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/external/valgrind/main".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/external/valgrind/main/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/external/libcxx/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/system/core/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/frameworks/base/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/frameworks/native/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/libnativehelper/include".toString()
+        cppFlags  += "-I${android_5_0_2_r3}/libnativehelper/include/nativehelper".toString()
 
     }
 }

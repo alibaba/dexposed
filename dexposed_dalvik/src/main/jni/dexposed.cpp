@@ -21,11 +21,13 @@
  */
 
 #define LOG_TAG "Dexposed"
+#define ANDROID_SMP 0
 
 #include "dexposed.h"
 
 #include <android_runtime/AndroidRuntime.h>
 #include <sys/mman.h>
+#include <cutils/atomic-inline.h>
 #include <cutils/properties.h>
 #include <dlfcn.h>
 

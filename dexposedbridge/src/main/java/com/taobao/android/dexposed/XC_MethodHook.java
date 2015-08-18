@@ -46,7 +46,7 @@ public abstract class XC_MethodHook extends XCallback {
 	protected void afterHookedMethod(MethodHookParam param) throws Throwable  {}
 	
 	
-	public static class MethodHookParam extends XCallback.Param {
+	public static class MethodHookParam extends Param {
 		/** Description of the hooked method */
 		public Member method;
 		/** The <code>this</code> reference for an instance method, or null for static methods */

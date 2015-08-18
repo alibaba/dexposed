@@ -67,13 +67,15 @@ using art::ThrowLocation;
 #define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
 #define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 
+#define PLATFORM_SDK_VERSION 21
+
 #define SHARED_LOCKS_REQUIRED(...) THREAD_ANNOTATION_ATTRIBUTE__(shared_locks_required(__VA_ARGS__))
 
 namespace art {
     struct DexposedHookInfo {
         jobject reflectedMethod;
         jobject additionalInfo;
-        jobject original_method;
+        mirror::ArtMethod* originalMethod;
     };
 
     static bool dexposedIsHooked(ArtMethod* method);
