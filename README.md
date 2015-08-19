@@ -1,5 +1,7 @@
 What is it?
 -----------
+
+[![Join the chat at https://gitter.im/alibaba/dexposed](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alibaba/dexposed?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Dexposed is a powerful yet non-invasive runtime [AOP (Aspect-oriented Programming)](http://en.wikipedia.org/wiki/Aspect-oriented_programming) framework
 for Android app development, based on the work of open-source [Xposed](https://github.com/rovo89/Xposed) [framework](https://github.com/rovo89/XposedBridge) project.
 
