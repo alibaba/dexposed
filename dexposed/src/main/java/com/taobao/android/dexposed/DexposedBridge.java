@@ -142,7 +142,7 @@ public final class DexposedBridge {
 		callbacks.add(callback);
 		if (newMethod) {
 			Class<?> declaringClass = hookMethod.getDeclaringClass();
-			int slot = (runtime == RUNTIME_DALVIK) ? (int) getIntField(hookMethod, "slot") : 0;
+			int slot = (runtime == RUNTIME_DALVIK) ? getIntField(hookMethod, "slot") : 0;
 
 			Class<?>[] parameterTypes;
 			Class<?> returnType;
@@ -342,7 +342,7 @@ public final class DexposedBridge {
 			if(runtime == RUNTIME_DALVIK) {
 				//get the super method slot
 				Method m = XposedHelpers.findMethodExact(obj.getClass().getSuperclass(), method.getName(), ((Method) method).getParameterTypes());
-				slot =  (int) getIntField(m, "slot");
+				slot = getIntField(m, "slot");
 			}
 
 			return invokeSuperNative(obj, args, method, method.getDeclaringClass(), ((Method) method).getParameterTypes(), ((Method) method).getReturnType(), slot);
