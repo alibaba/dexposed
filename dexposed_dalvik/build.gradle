@@ -31,6 +31,7 @@ model{
         toolchainVersion = "4.9"
 
         cppFlags += ["-DPLATFORM_SDK_VERSION=17", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_7__"]
+
         ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
         stl = "stlport_static"
 
@@ -40,20 +41,16 @@ model{
         ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
         abiFilters += ["armeabi-v7a"]
 
-        /**
-         *  include android source
-         *  ${android_source_dir} define at gradle.properties
-         */
-        cppFlags  += "-I${android_source_dir}/dalvik".toString()
-        cppFlags  += "-I${android_source_dir}/dalvik/vm".toString()
-        cppFlags  += "-I${android_source_dir}/external/stlport/stlport".toString()
-        cppFlags  += "-I${android_source_dir}/bionic".toString()
-        cppFlags  += "-I${android_source_dir}/bionic/libstdc++/include".toString()
-        cppFlags  += "-I${android_source_dir}/system/core/include".toString()
-        cppFlags  += "-I${android_source_dir}/frameworks/native/include".toString()
-        cppFlags  += "-I${android_source_dir}/frameworks/base/include".toString()
-        cppFlags  += "-I${android_source_dir}/libnativehelper/include".toString()
-
+        println("======"+getRootDir().toString()+"===="+getProjectDir().toString())
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik/vm".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/stlport/stlport".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/bionic".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/bionic/libstdc++/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/system/core/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/native/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/base/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include".toString()
     }
 }
 

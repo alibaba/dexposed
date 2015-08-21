@@ -1,5 +1,6 @@
 package com.taobao.dexposed;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,22 +12,19 @@ import android.widget.Button;
 import com.taobao.android.dexposed.DexposedBridge;
 import com.taobao.android.dexposed.XC_MethodHook;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Activity
 {
 	public static final String TAG = "===[dexposed-demo]===";
-
-	MainActivity instanc;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		instanc = this;
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 
 		if (DexposedBridge.canDexposed(MainActivity.this)) {
-			DexposedBridge.findAndHookMethod(MainActivity.class, "test",  new XC_MethodHook()
+			DexposedBridge.findAndHookMethod(MainActivity.class, "test", String.class, new XC_MethodHook()
 			{
 
 				@Override
@@ -51,27 +49,15 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				instanc.test();
+				Log.d(TAG, "=========================onClick==============" + test("1111"));
 			}
 		});
 
 	}
 
-	public void test()
+	public String test(String param)
 	{
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		return true;
+		Log.d(TAG, "=========================test call=============="+param);
+		return param;
 	}
 }
