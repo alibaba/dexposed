@@ -211,7 +211,7 @@ DEFINE_FUNCTION art_quick_dexposed_invoke_handler
     PUSH ecx                      // pass receiver
     PUSH eax                      // pass proxy method
     SETUP_GOT_NOSAVE              // clobbers EBX
-    call SYMBOL(artQuickProxyInvokeHandler) // (proxy method, receiver, Thread*, SP)
+    call SYMBOL(artQuickDexposedInvokeHandler) // (proxy method, receiver, Thread*, SP)
     movd %eax, %xmm0              // place return value also into floating point return value
     movd %edx, %xmm1
     punpckldq %xmm1, %xmm0
