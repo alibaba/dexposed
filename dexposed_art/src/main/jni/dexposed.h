@@ -19,7 +19,6 @@
 #ifndef DEXPOSED_H
 #define DEXPOSED_H
 
-#define ANDROID_SMP 0
 #include <jni.h>
 #include <mirror/art_method.h>
 #include <mirror/object.h>
@@ -40,6 +39,7 @@
 #include <jni_internal.h>
 
 using art::mirror::ArtMethod;
+using art::mirror::EntryPointFromInterpreter;
 using art::mirror::Array;
 using art::mirror::ObjectArray;
 using art::mirror::Class;
@@ -67,11 +67,10 @@ using art::ThrowLocation;
 #define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
 #define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 
-#define PLATFORM_SDK_VERSION 21
-
 #define SHARED_LOCKS_REQUIRED(...) THREAD_ANNOTATION_ATTRIBUTE__(shared_locks_required(__VA_ARGS__))
 
 namespace art {
+
     struct DexposedHookInfo {
         jobject reflectedMethod;
         jobject additionalInfo;

@@ -203,6 +203,7 @@ MACRO0(RETURN_OR_DELIVER_PENDING_EXCEPTION)
     DELIVER_PENDING_EXCEPTION
 END_MACRO
 
+	.extern artQuickDexposedInvokeHandler
 DEFINE_FUNCTION art_quick_dexposed_invoke_handler
     SETUP_REF_AND_ARGS_CALLEE_SAVE_FRAME   // save frame and Method*
     PUSH esp                      // pass SP

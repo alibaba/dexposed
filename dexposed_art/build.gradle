@@ -2,12 +2,12 @@ apply plugin: 'com.android.model.library'
 
 model{
     android {
-        compileSdkVersion = 22
+        compileSdkVersion = 21
         buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
-            minSdkVersion.apiLevel = 10
-            targetSdkVersion.apiLevel = 22
+            minSdkVersion.apiLevel = 21
+            targetSdkVersion.apiLevel = 21
             versionCode = 1
             versionName = "1.0"
         }
@@ -26,10 +26,10 @@ model{
         toolchain = "gcc"
         toolchainVersion = "4.9"
 
-        CFlags += ["-D_USING_LIBCXX"]
-        cppFlags += ["-std=c++11", "-DHAVE_LITTLE_ENDIAN"]
+        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O1", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
+        cppFlags += ["-std=c++0x", "-DPLATFORM_SDK_VERSION=21", "-DANDROID_SMP=0", "-UNDEBUG","-O0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
         ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
-        stl = "c++_static" // libart.so extern std::__1  so  use libc++
+        stl = "c++_static" // libart.so extern std::__1::stream  so  use libc++
 
         ldFlags += "-Lsrc/main/jniLibs/x86"
         abiFilters += ["x86"]
@@ -51,11 +51,9 @@ model{
         cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include".toString()
         cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include/nativehelper".toString()
 
-
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
 }
