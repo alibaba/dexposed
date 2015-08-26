@@ -2,7 +2,7 @@ apply plugin: 'com.android.model.application'
 
 model{
     android {
-        compileSdkVersion = 21
+        compileSdkVersion = 19
         buildToolsVersion = "22.0.1"
 
         compileOptions.with {
@@ -11,9 +11,9 @@ model{
         }
 
         defaultConfig.with {
-            applicationId = "com.taobao.dexposed"
-            minSdkVersion.apiLevel = 21
-            targetSdkVersion.apiLevel = 21
+            applicationId = "com.taobao.dexposed.demo"
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 19
             versionCode = 1
             versionName = "1.0"
         }
@@ -27,9 +27,7 @@ model{
     }
 }
 
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.0.1'
     compile project(':dexposedbridge')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }

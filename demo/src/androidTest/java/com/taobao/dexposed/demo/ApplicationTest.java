@@ -1,4 +1,4 @@
-package com.taobao.dexposed;
+package com.taobao.dexposed.demo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

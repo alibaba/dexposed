@@ -2,12 +2,12 @@ apply plugin: 'com.android.model.library'
 
 model{
     android {
-        compileSdkVersion = 22
+        compileSdkVersion = 19
         buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
             minSdkVersion.apiLevel = 10
-            targetSdkVersion.apiLevel = 22
+            targetSdkVersion.apiLevel = 19
             versionCode = 1
             versionName = "1.0"
         }
@@ -41,7 +41,7 @@ model{
         ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
         abiFilters += ["armeabi-v7a"]
 
-        println("======"+getRootDir().toString()+"===="+getProjectDir().toString())
+//        println("======"+getRootDir().toString()+"===="+getProjectDir().toString())
         cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik".toString()
         cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik/vm".toString()
         cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/stlport/stlport".toString()
@@ -56,5 +56,5 @@ model{
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
 }
+build.dependsOn("assemble")

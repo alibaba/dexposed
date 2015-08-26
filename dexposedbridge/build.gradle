@@ -11,7 +11,7 @@ model{
         }
 
         defaultConfig.with {
-            minSdkVersion.apiLevel = 21
+            minSdkVersion.apiLevel = 10
             targetSdkVersion.apiLevel = 21
             versionCode = 1
             versionName = "1.0"
@@ -24,9 +24,12 @@ model{
             proguardFiles += file('proguard-rules.pro')
         }
     }
+
+    android.ndk {
+        moduleName = "dexposedbridge"
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
 }
