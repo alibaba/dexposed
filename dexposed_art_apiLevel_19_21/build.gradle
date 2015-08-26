@@ -1,0 +1,59 @@
+apply plugin: 'com.android.model.library'
+
+model{
+    android {
+        compileSdkVersion = 21
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 21
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+        }
+    }
+
+    android.ndk {
+        moduleName = "dexposed_art_19_21"
+
+        toolchain = "gcc"
+        toolchainVersion = "4.9"
+
+        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O1", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
+        cppFlags += ["-std=c++0x", "-DPLATFORM_SDK_VERSION=19", "-DANDROID_SMP=0", "-UNDEBUG","-O0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
+        ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
+        stl = "c++_static" // libart.so extern std::__1::stream  so  use libc++
+
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        abiFilters += ["x86"]
+
+        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
+        abiFilters += ["armeabi-v7a"]
+
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/art".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/art/runtime".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/art/runtime/arch/arm".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/art/runtime/entrypoints/quick".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/gtest/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/valgrind/main".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/valgrind/main/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/libcxx/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/system/core/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/base/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/native/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include".toString()
+        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include/nativehelper".toString()
+
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
