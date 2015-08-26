@@ -274,11 +274,13 @@ namespace art {
         hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
         hookInfo->originalMethod = backup_method;
 
-#if PLATFORM_SDK_VERSION == 21
-        art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));
-#else
-        art_method->SetEntryPointFromJni(reinterpret_cast<void *>(hookInfo));
-#endif
+//#if PLATFORM_SDK_VERSION == 21
+//        art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));
+//#else
+//        art_method->SetEntryPointFromJni(reinterpret_cast<void *>(hookInfo));
+//#endif
+        LOG(INFO) << "dexposed: >>> EntryPointFromJniOffset " << art_method->EntryPointFromJniOffset(sizeof(void*));
+        art_method->SetFieldPtr<false, true, kDefaultVerifyFlags>(MemberOffset(40),reinterpret_cast<void *>(hookInfo));
 
         art_method->SetEntryPointFromQuickCompiledCode((void *) art_quick_dexposed_invoke_handler);
 // Adjust access flags

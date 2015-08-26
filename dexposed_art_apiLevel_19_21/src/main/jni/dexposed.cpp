@@ -268,7 +268,9 @@ namespace art {
         hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
         hookInfo->originalMethod = backup_method;
 
-        art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));
+        art_method->SetFieldPtr<false, true, kDefaultVerifyFlags>(MemberOffset(32),reinterpret_cast<void *>(hookInfo));
+//        art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));
+
         art_method->SetEntryPointFromQuickCompiledCode((void *)art_quick_dexposed_invoke_handler);
         // Adjust access flags
         art_method->SetAccessFlags((art_method->GetAccessFlags() & ~kAccNative) /*| kAccXposedHookedMethod*/);
