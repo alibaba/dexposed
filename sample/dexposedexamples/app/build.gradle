@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.taobao.dexposed"
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 21
         versionName "1.0"
     }
@@ -25,5 +25,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile( 'com.taobao.android:dexposed:0.1.6@aar')
+//    compile project(':dexposed')
 }
