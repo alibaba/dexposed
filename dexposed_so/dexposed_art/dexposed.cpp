@@ -59,15 +59,21 @@ namespace art {
 			return false;
 		}
 
-		jmethodID dexposedbridgeMainMethod = env->GetStaticMethodID(dexposed_class,
-				"main", "()V");
-		if (dexposedbridgeMainMethod == NULL) {
-			LOG(ERROR) << "dexposed: Could not find method " << DEXPOSED_CLASS << ".main()";
+		return true;
+	}
+
+	static jboolean initNative(JNIEnv* env, jclass) {
+
+		LOG(INFO) << "dexposed: initNative";
+
+		dexposed_handle_hooked_method =
+				env->GetStaticMethodID(dexposed_class, "handleHookedMethod",
+						"(Ljava/lang/reflect/Member;ILjava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
+		if (dexposed_handle_hooked_method == NULL) {
+			LOG(ERROR) << "dexposed: Could not find method " << DEXPOSED_CLASS << ".handleHookedMethod()";
 			env->ExceptionClear();
 			return false;
 		}
-		env->CallStaticVoidMethod(dexposed_class, dexposedbridgeMainMethod);
-
 		return true;
 	}
 
@@ -81,24 +87,10 @@ namespace art {
 		}
 
 		int keepLoadingDexposed = dexposedOnVmCreated(env, NULL);
+		if(keepLoadingDexposed)
+			initNative(env, NULL);
 
 		return JNI_VERSION_1_6;
-	}
-
-	static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env,
-			jclass) {
-
-		LOG(INFO) << "dexposed: com_taobao_android_dexposed_DexposedBridge_initNative";
-
-		dexposed_handle_hooked_method =
-				env->GetStaticMethodID(dexposed_class, "handleHookedMethod",
-						"(Ljava/lang/reflect/Member;ILjava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
-		if (dexposed_handle_hooked_method == NULL) {
-			LOG(ERROR) << "dexposed: Could not find method " << DEXPOSED_CLASS << ".handleHookedMethod()";
-			env->ExceptionClear();
-			return false;
-		}
-		return true;
 	}
 
 	extern "C" void art_quick_dexposed_invoke_handler();
@@ -340,7 +332,6 @@ namespace art {
 
 	static const JNINativeMethod dexposedMethods[] =
 	{
-		{ "initNative", "()Z", (void*) com_taobao_android_dexposed_DexposedBridge_initNative },
 		{ "hookMethodNative", "(Ljava/lang/reflect/Member;Ljava/lang/Class;ILjava/lang/Object;)V",
 							(void*) com_taobao_android_dexposed_DexposedBridge_hookMethodNative },
 		{ "invokeOriginalMethodNative",
