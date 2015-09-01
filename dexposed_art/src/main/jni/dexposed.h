@@ -79,7 +79,6 @@ namespace art {
 
     static bool dexposedIsHooked(ArtMethod* method);
 
-    static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env, jclass clazz);
     static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject javaMethod, jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect);
 
     static int register_com_taobao_android_dexposed_DexposedBridge(JNIEnv* env);

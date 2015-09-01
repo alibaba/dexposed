@@ -45,12 +45,11 @@ import com.taobao.android.dexposed.XposedHelpers.InvocationTargetError;
 
 public final class DexposedBridge {
 
+	private static final int RUNTIME_UNKNOW = 0;
 	private static final int RUNTIME_DALVIK = 1;
 	private static final int RUNTIME_ART = 2;
-	private static int runtime = RUNTIME_DALVIK;
+	private static int runtime = RUNTIME_UNKNOW;
 	
-	private static boolean disableHooks = false;
-
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 	public static final ClassLoader BOOTCLASSLOADER = ClassLoader.getSystemClassLoader();
 
@@ -62,31 +61,8 @@ public final class DexposedBridge {
 	private static final ArrayList<Unhook> allUnhookCallbacks = new ArrayList<Unhook>();
 
 	
-	/**
-	 * Called when native methods and other things are initialized, but before preloading classes etc.
-	 */
-	private static void main() {
-
-		// initialize the Xposed framework and modules
-		try {
-			
-			runtime = getRuntime();
-
-			if (initNative()) {
-
-			} else {
-				log("Errors during native Xposed initialization");
-				disableHooks = true;
-			}
-		} catch (Throwable t) {
-			log("Errors during Xposed initialization");
-			log(t);
-			disableHooks = true;
-		}
-	}
-	
 	private static int getRuntime() {
-		
+
 		if(VERSION.SDK_INT >= 21){
 			return RUNTIME_ART;
 		} else if(VERSION.SDK_INT >= 20) {
@@ -100,22 +76,21 @@ public final class DexposedBridge {
 		}
 	}
 
-	
 	/**
 	 * Writes a message to BASE_DIR/log/debug.log (needs to have chmod 777)
 	 * @param text log message
 	 */
 	public synchronized static void log(String text) {
-		Log.i("Xposed", text);
+		Log.i("Dexposed",text);
 	}
-	
+
 	/**
 	 * Log the stack trace
 	 * @param t The Throwable object for the stacktrace
 	 * @see DexposedBridge#log(String)
 	 */
 	public synchronized static void log(Throwable t) {
-		Log.i("Xposed", Log.getStackTraceString(t));
+		log(Log.getStackTraceString(t));
 	}
 
 	/**
@@ -142,6 +117,7 @@ public final class DexposedBridge {
 		callbacks.add(callback);
 		if (newMethod) {
 			Class<?> declaringClass = hookMethod.getDeclaringClass();
+			if(runtime == RUNTIME_UNKNOW)  runtime = getRuntime();
 			int slot = (runtime == RUNTIME_DALVIK) ? (int) getIntField(hookMethod, "slot") : 0;
 
 			Class<?>[] parameterTypes;
@@ -222,18 +198,8 @@ public final class DexposedBridge {
 			Object thisObject, Object[] args) throws Throwable {
 		AdditionalHookInfo additionalInfo = (AdditionalHookInfo) additionalInfoObj;
 
-		if (disableHooks) {
-			try {
-				return invokeOriginalMethodNative(method, originalMethodId, additionalInfo.parameterTypes,
-						additionalInfo.returnType, thisObject, args);
-			} catch (InvocationTargetException e) {
-				throw e.getCause();
-			}
-		}
-
 		Object[] callbacksSnapshot = additionalInfo.callbacks.getSnapshot();
 		final int callbacksLength = callbacksSnapshot.length;
-		log("callbacksLength:"+callbacksLength);
 		if (callbacksLength == 0) {
 			try {
 				return invokeOriginalMethodNative(method, originalMethodId, additionalInfo.parameterTypes,
@@ -254,7 +220,7 @@ public final class DexposedBridge {
 			try {
 				((XC_MethodHook) callbacksSnapshot[beforeIdx]).beforeHookedMethod(param);
 			} catch (Throwable t) {
-				DexposedBridge.log(t);
+				log(t);
 
 				// reset result (ignoring what the unexpectedly exiting callback did)
 				param.setResult(null);
@@ -312,20 +278,21 @@ public final class DexposedBridge {
 		if (!DeviceCheck.isDeviceSupport(context)) {
 			return false;
 		}
-		//load xposed lib for hook.
+		//load dexposed lib for hook.
 		return loadDexposedLib(context);
 	}
 	
 	private static boolean loadDexposedLib(Context context) {
-		// load xposed lib for hook.
+		// load dexposed lib for hook.
 		try {
-			if (VERSION.SDK_INT > 19 && VERSION.SDK_INT <= 21){
-				System.loadLibrary("dexposed_art_19_21");
-			}else if (VERSION.SDK_INT >= 22){
+			if ( VERSION.SDK_INT >= 22 ){
 				System.loadLibrary("dexposed_art_22");
-			} else if (VERSION.SDK_INT == 10
-					|| VERSION.SDK_INT == 9 || VERSION.SDK_INT > 14){
+			}else if (VERSION.SDK_INT > 19 && VERSION.SDK_INT <= 21){
+				System.loadLibrary("dexposed_art_19_21");
+			} else if (VERSION.SDK_INT >= 10){
 				System.loadLibrary("dexposed");
+			} else {
+				return false;
 			}
 			return true;
 		} catch (Throwable e) {
@@ -342,6 +309,8 @@ public final class DexposedBridge {
 	public static Object invokeSuper(Object obj, Member method, Object... args) throws NoSuchFieldException {
 		
 		try {
+			if(runtime == RUNTIME_UNKNOW)  runtime = getRuntime();
+
 			int slot = 0;
 			if(runtime == RUNTIME_DALVIK) {
 				//get the super method slot
@@ -359,8 +328,6 @@ public final class DexposedBridge {
 			throw new InvocationTargetError(e.getCause());
 		}
 	}
-	
-	private native static boolean initNative();
 	
 	/**
 	 * Intercept every call to the specified method and call a handler function instead.

@@ -64,6 +64,7 @@ struct DexposedHookInfo {
 void dexposedInfo();
 bool isRunningDalvik();
 bool dexposedOnVmCreated(JNIEnv* env, const char* className);
+static jboolean initNative(JNIEnv* env, jclass clazz);
 static bool dexposedInitMemberOffsets(JNIEnv* env);
 static inline void dexposedSetObjectArrayElement(const ArrayObject* obj, int index, Object* val);
 
@@ -75,7 +76,6 @@ static void patchReturnTrue(uintptr_t function);
 static inline bool dexposedIsHooked(const Method* method);
 
 // JNI methods
-static jboolean com_taobao_android_dexposed_DexposedBridge_initNative(JNIEnv* env, jclass clazz);
 static void com_taobao_android_dexposed_DexposedBridge_hookMethodNative(JNIEnv* env, jclass clazz, jobject reflectedMethodIndirect,
             jobject declaredClassIndirect, jint slot, jobject additionalInfoIndirect);
 static void com_taobao_android_dexposed_DexposedBridge_invokeOriginalMethodNative(const u4* args, JValue* pResult, const Method* method, ::Thread* self);
