@@ -28,6 +28,6 @@ model{
 }
 
 dependencies {
-    compile project(':dexposedbridge')
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':dexposed')
 }

@@ -35,26 +35,26 @@ model{
         ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
         stl = "stlport_static"
 
-        ldFlags += "-Lsrc/main/jniLibs/x86"
         abiFilters += ["x86"]
-
-        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
         abiFilters += ["armeabi-v7a"]
 
-//        println("======"+getRootDir().toString()+"===="+getProjectDir().toString())
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/dalvik/vm".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/external/stlport/stlport".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/bionic".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/bionic/libstdc++/include".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/system/core/include".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/native/include".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/frameworks/base/include".toString()
-        cppFlags  += "-I${getProjectDir().toString()}/src/main/jni/include/libnativehelper/include".toString()
+        def android_branch = "android-2.3.3_r1.1";
+
+        ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/x86".toString()
+        ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/armeabi-v7a".toString()
+
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/dalvik".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/dalvik/vm".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/stlport/stlport".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/bionic".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/bionic/libstdc++/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/system/core/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/native/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/base/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include".toString()
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
-build.dependsOn("assemble")

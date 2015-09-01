@@ -329,6 +329,7 @@ public final class DexposedBridge {
 			}
 			return true;
 		} catch (Throwable e) {
+			log(e);
 			return false;
 		}
 	}

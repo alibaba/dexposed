@@ -1,0 +1,3 @@
+[submodule "dexposed-patch"]
+	path = dexposed-patch
+	url = https://github.com/pangliang/dexposed-patch.git
