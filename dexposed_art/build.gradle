@@ -1,4 +1,4 @@
-apply plugin: 'com.android.model.library'
+apply plugin: 'com.android.model.application'
 
 model{
     android {
@@ -6,11 +6,14 @@ model{
         buildToolsVersion = "22.0.1"
 
         defaultConfig.with {
+            applicationId = "com.taobao.dexposed.art"
             minSdkVersion.apiLevel = 10
             targetSdkVersion.apiLevel = 22
             versionCode = 1
             versionName = "1.0"
         }
+
+
     }
 
     android.buildTypes {
@@ -26,8 +29,9 @@ model{
 
         moduleName = "dexposed_art_22"
 
-        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
-        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-UNDEBUG","-O0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64"]
+        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
+        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64"]
+
         ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
         stl = "c++_static" // libart.so extern std::__1::stream  so  use libc++
 
@@ -91,8 +95,12 @@ model{
             }
         }
     }
+
 }
 
 dependencies {
+    compile project(':dexposedbridge')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+

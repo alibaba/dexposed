@@ -130,3 +130,7 @@ bintray {
 dependencies {
     compile project(':dexposedbridge')
 }
+
+preBuild.dependsOn(':dexposed_dalvik:compileDebugSources')
+preBuild.dependsOn(':dexposed_art:compileAndroid_5.0DebugSources')
+preBuild.dependsOn(':dexposed_art:compileAndroid_5.1DebugSources')
