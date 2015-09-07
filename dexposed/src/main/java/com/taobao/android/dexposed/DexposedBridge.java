@@ -286,9 +286,9 @@ public final class DexposedBridge {
 		// load dexposed lib for hook.
 		try {
 			if ( VERSION.SDK_INT >= 22 ){
-				System.loadLibrary("dexposed_art_22");
+				System.loadLibrary("dexposed_art_51");
 			}else if (VERSION.SDK_INT > 19 && VERSION.SDK_INT <= 21){
-				System.loadLibrary("dexposed_art_19_21");
+				System.loadLibrary("dexposed_art_50");
 			} else if (VERSION.SDK_INT >= 10){
 				System.loadLibrary("dexposed");
 			} else {

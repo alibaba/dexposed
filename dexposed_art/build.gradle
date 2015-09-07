@@ -16,11 +16,11 @@ model{
 
     //when debug this pro, exclude libso in dexposed
     android.packagingOptions {
-        pickFirst 'lib/armeabi-v7a/libdexposed_art_19_21.so'
-        pickFirst 'lib/x86/libdexposed_art_19_21.so'
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_50.so'
+        pickFirst 'lib/x86/libdexposed_art_50.so'
 
-        pickFirst 'lib/armeabi-v7a/libdexposed_art_22.so'
-        pickFirst 'lib/x86/libdexposed_art_22.so'
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_51.so'
+        pickFirst 'lib/x86/libdexposed_art_51.so'
     }
 
     android.buildTypes {
@@ -49,7 +49,7 @@ model{
     android.productFlavors {
         create("android_5.1") {
             ndk.with {
-                moduleName = "dexposed_art_22"
+                moduleName = "dexposed_art_51"
 
                 cppFlags += ["-DPLATFORM_SDK_VERSION=22" ]
 
@@ -76,7 +76,7 @@ model{
 
         create("android_5.0") {
             ndk.with {
-                moduleName = "dexposed_art_19_21"
+                moduleName = "dexposed_art_50"
 
                 cppFlags += ["-DPLATFORM_SDK_VERSION=21" ]
 
