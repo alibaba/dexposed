@@ -12,8 +12,15 @@ model{
             versionCode = 1
             versionName = "1.0"
         }
+    }
 
+    //when debug this pro, exclude libso in dexposed
+    android.packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_19_21.so'
+        pickFirst 'lib/x86/libdexposed_art_19_21.so'
 
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_22.so'
+        pickFirst 'lib/x86/libdexposed_art_22.so'
     }
 
     android.buildTypes {
@@ -48,22 +55,22 @@ model{
 
                 def android_branch = "android-5.1.0_r5";
 
-                ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/x86".toString()
-                ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/armeabi-v7a".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
 
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime/arch/arm".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime/entrypoints/quick".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/gtest/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/valgrind/main".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/valgrind/main/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/libcxx/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/system/core/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/base/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/native/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include/nativehelper".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/entrypoints/quick".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/gtest/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/libcxx/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include/nativehelper".toString()
             }
         }
 
@@ -75,22 +82,22 @@ model{
 
                 def android_branch = "android-5.0.2_r3";
 
-                ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/x86".toString()
-                ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/armeabi-v7a".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
 
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime/arch/arm".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/art/runtime/entrypoints/quick".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/gtest/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/valgrind/main".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/valgrind/main/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/libcxx/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/system/core/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/base/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/native/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include".toString()
-                cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include/nativehelper".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/entrypoints/quick".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/gtest/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/libcxx/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include/nativehelper".toString()
 
             }
         }
@@ -99,7 +106,7 @@ model{
 }
 
 dependencies {
-    compile project(':dexposedbridge')
+    compile project(':dexposed')
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 

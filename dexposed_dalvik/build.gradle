@@ -41,18 +41,18 @@ model{
 
         def android_branch = "android-2.3.3_r1.1";
 
-        ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/x86".toString()
-        ldFlags += "-L${getRootDir()}/dexposed-patch/${android_branch}/jniLibs/armeabi-v7a".toString()
+        ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+        ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
 
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/dalvik".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/dalvik/vm".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/external/stlport/stlport".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/bionic".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/bionic/libstdc++/include".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/system/core/include".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/native/include".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/frameworks/base/include".toString()
-        cppFlags  += "-I${getRootDir()}/dexposed-patch/${android_branch}/include/libnativehelper/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/dalvik".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/dalvik/vm".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/stlport/stlport".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/bionic".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/bionic/libstdc++/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
     }
 }
 

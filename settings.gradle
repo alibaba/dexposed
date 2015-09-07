@@ -1,1 +1,1 @@
-include ':dexposed', ':dexposedbridge', ':dexposed_art', ':dexposed_dalvik'
+include ':dexposed', ':dexposed_art', ':dexposed_dalvik'
