@@ -25,7 +25,8 @@ model{
             proguardFiles += file('proguard-rules.pro')
 
             ndk.with {
-                cppFlags += ["-DNOALOG"]
+                CFlags += ["-O3"]
+                cppFlags += ["-DNDEBUG", "-O3"]
             }
         }
     }
@@ -36,9 +37,7 @@ model{
         toolchain = "gcc"
         toolchainVersion = "4.9"
 
-        CFlags += ["-O3"]
-        cppFlags += ["-DPLATFORM_SDK_VERSION=14", "-O3", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_7__"]
-
+        cppFlags += ["-DPLATFORM_SDK_VERSION=14", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_7__"]
         ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
 
         abiFilters += ["x86"]

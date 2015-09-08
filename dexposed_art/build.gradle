@@ -27,6 +27,23 @@ model{
         release {
             minifyEnabled = false
             proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                CFlags += ["-DNDEBUG", "-O3"]
+                cppFlags += ["-DNDEBUG", "-O3"]
+
+            }
+        }
+
+        debug {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                CFlags += ["-UNDEBUG", "-O0"]
+                cppFlags += ["-UNDEBUG", "-O0"]
+
+            }
         }
     }
 
@@ -36,8 +53,8 @@ model{
 
         moduleName = "dexposed_art_22"
 
-        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-fPIC"]
-        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64", "-fno-exceptions" ,"-fPIC"]
+        CFlags += ["-D_USING_LIBCXX", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-fPIC"]
+        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64", "-fno-exceptions" ,"-fPIC"]
 
         ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
 

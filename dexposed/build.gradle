@@ -6,13 +6,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-
-    buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles += file('proguard-rules.pro')
-        }
-    }
 }
 buildscript {
     repositories {
@@ -141,29 +134,29 @@ dependencies {
 
 // copy libso
 task copyX86JniLIbs(type: Copy){
-    from '../dexposed_dalvik/build/intermediates/binaries/debug/lib/x86/libdexposed.so'
-    from '../dexposed_art/build/intermediates/binaries/debug/android_5.0/lib/x86/libdexposed_art_50.so'
-    from '../dexposed_art/build/intermediates/binaries/debug/android_5.1/lib/x86/libdexposed_art_51.so'
+    from '../dexposed_dalvik/build/intermediates/binaries/release/lib/x86/libdexposed.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_5.0/lib/x86/libdexposed_art_50.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_5.1/lib/x86/libdexposed_art_51.so'
 
     into 'src/main/jniLibs/x86/'
 }
 
 task copyArmeabiJniLIbs(type: Copy){
-    from '../dexposed_dalvik/build/intermediates/binaries/debug/lib/armeabi-v7a/libdexposed.so'
-    from '../dexposed_art/build/intermediates/binaries/debug/android_5.0/lib/armeabi-v7a/libdexposed_art_50.so'
-    from '../dexposed_art/build/intermediates/binaries/debug/android_5.1/lib/armeabi-v7a/libdexposed_art_51.so'
+    from '../dexposed_dalvik/build/intermediates/binaries/release/lib/armeabi-v7a/libdexposed.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_5.0/lib/armeabi-v7a/libdexposed_art_50.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_5.1/lib/armeabi-v7a/libdexposed_art_51.so'
 
     into 'src/main/jniLibs/armeabi-v7a/'
 }
 
 // build libso
-copyX86JniLIbs.dependsOn(':dexposed_dalvik:compileDebugSources')
-copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_5.0DebugSources')
-copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_5.1DebugSources')
+copyX86JniLIbs.dependsOn(':dexposed_dalvik:compileReleaseSources')
+copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_5.0ReleaseSources')
+copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_5.1ReleaseSources')
 
 copyArmeabiJniLIbs.dependsOn copyX86JniLIbs
 
-
+assembleRelease.dependsOn copyArmeabiJniLIbs //TODO: release build no work, must be debug build !!!
 assembleDebug.dependsOn copyArmeabiJniLIbs
 
 
