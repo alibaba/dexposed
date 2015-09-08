@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">dexposed_dalvik</string>
+    <string name="app_name">dexposed_art</string>
+    <string name="hello_world">hello_world</string>
 </resources>

@@ -36,14 +36,22 @@ model{
 
         moduleName = "dexposed_art_22"
 
-        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1"]
-        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64"]
+        CFlags += ["-D_USING_LIBCXX", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-fPIC"]
+        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-UNDEBUG","-O3", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64", "-fno-exceptions" ,"-fPIC"]
 
         ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
-        stl = "c++_static" // libart.so extern std::__1::stream  so  use libc++
 
         abiFilters += ["x86"]
         abiFilters += ["armeabi-v7a"]
+
+        //use stl = "c++_static" get big so file, so use libc++.so
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def ndkDir = properties.getProperty('ndk.dir')
+
+        cppFlags  += "-I${ndkDir}/sources/cxx-stl/llvm-libc++/libcxx/include".toString()
+        cppFlags  += "-I${ndkDir}/sources/cxx-stl/llvm-libc++abi/libcxxabi/include".toString()
+        cppFlags  += "-I${ndkDir}/sources/android/support/include".toString()
     }
 
     android.productFlavors {
