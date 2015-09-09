@@ -54,12 +54,15 @@ model{
         moduleName = "dexposed_art_22"
 
         CFlags += ["-D_USING_LIBCXX", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-fPIC"]
-        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64", "-fno-exceptions" ,"-fPIC"]
+        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64"]
 
         ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
 
         abiFilters += ["x86"]
         abiFilters += ["armeabi-v7a"]
+
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
 
         //use stl = "c++_static" get big so file, so use libc++.so
         Properties properties = new Properties()
@@ -72,7 +75,7 @@ model{
     }
 
     android.productFlavors {
-        create("android_5.1") {
+        create("android_51") {
             ndk.with {
                 moduleName = "dexposed_art_51"
 
@@ -99,7 +102,7 @@ model{
             }
         }
 
-        create("android_5.0") {
+        create("android_50") {
             ndk.with {
                 moduleName = "dexposed_art_50"
 
@@ -135,4 +138,36 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
+task buildAssemble(type:Exec){
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkDir = properties.getProperty('ndk.dir')
+    def android_branch = "android-5.0.2_r3";
 
+    commandLine "${ndkDir}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-g++",
+            "--sysroot=${ndkDir}/platforms/android-21/arch-arm",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm",
+            "${getProjectDir()}/src/main/jni/art_quick_dexposed_invoke_handler.S",
+            "-o","${getProjectDir()}/src/main/jniLibs/armeabi-v7a/libart_quick_dexposed_invoke_handler.so",
+            "-c"
+
+}
+
+task buildX86Assemble(type:Exec){
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkDir = properties.getProperty('ndk.dir')
+    def android_branch = "android-5.0.2_r3";
+
+    commandLine "${ndkDir}/toolchains/x86-4.9/prebuilt/darwin-x86_64/bin/i686-linux-android-g++",
+            "--sysroot=${ndkDir}/platforms/android-21/arch-arm",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/x86",
+            "${getProjectDir()}/src/main/jni/art_quick_dexposed_invoke_handler.S",
+            "-o","${getProjectDir()}/src/main/jniLibs/x86/libart_quick_dexposed_invoke_handler.so",
+            "-c"
+
+}
+
+buildAssemble.dependsOn buildX86Assemble
