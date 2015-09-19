@@ -21,3 +21,5 @@ dependencies.txt
 /dexposed/.DS_Store
 /sample/dexposedexamples/.gradle
 /sample/dexposedexamples/local.properties
+local.properties
+.gradle

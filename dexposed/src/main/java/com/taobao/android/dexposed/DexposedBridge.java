@@ -58,7 +58,7 @@ public final class DexposedBridge {
 	private static final Map<Member, CopyOnWriteSortedSet<XC_MethodHook>> hookedMethodCallbacks
 									= new HashMap<Member, CopyOnWriteSortedSet<XC_MethodHook>>();
 	
-	private static final ArrayList<XC_MethodHook.Unhook> allUnhookCallbacks = new ArrayList<XC_MethodHook.Unhook>();
+	private static final ArrayList<Unhook> allUnhookCallbacks = new ArrayList<Unhook>();
 
 	
 	private static int getRuntime() {
@@ -81,7 +81,7 @@ public final class DexposedBridge {
 	 * @param text log message
 	 */
 	public synchronized static void log(String text) {
-		log(text);
+		Log.i("Dexposed",text);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class DexposedBridge {
 	 * @param hookMethod The method to be hooked
 	 * @param callback 
 	 */
-	public static XC_MethodHook.Unhook hookMethod(Member hookMethod, XC_MethodHook callback) {
+	public static Unhook hookMethod(Member hookMethod, XC_MethodHook callback) {
 		if (!(hookMethod instanceof Method) && !(hookMethod instanceof Constructor<?>)) {
 			throw new IllegalArgumentException("only methods and constructors can be hooked");
 		}
@@ -151,21 +151,21 @@ public final class DexposedBridge {
 		callbacks.remove(callback);
 	}
 	
-	public static Set<XC_MethodHook.Unhook> hookAllMethods(Class<?> hookClass, String methodName, XC_MethodHook callback) {
-		Set<XC_MethodHook.Unhook> unhooks = new HashSet<XC_MethodHook.Unhook>();
+	public static Set<Unhook> hookAllMethods(Class<?> hookClass, String methodName, XC_MethodHook callback) {
+		Set<Unhook> unhooks = new HashSet<Unhook>();
 		for (Member method : hookClass.getDeclaredMethods())
 			if (method.getName().equals(methodName))
 				unhooks.add(hookMethod(method, callback));
 		return unhooks;
 	}
 	
-	public static XC_MethodHook.Unhook findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
+	public static Unhook findAndHookMethod(Class<?> clazz, String methodName, Object... parameterTypesAndCallback) {
 		if (parameterTypesAndCallback.length == 0 || !(parameterTypesAndCallback[parameterTypesAndCallback.length-1] instanceof XC_MethodHook))
 			throw new IllegalArgumentException("no callback defined");
 		
 		XC_MethodHook callback = (XC_MethodHook) parameterTypesAndCallback[parameterTypesAndCallback.length-1];
 		Method m = XposedHelpers.findMethodExact(clazz, methodName, parameterTypesAndCallback);
-		XC_MethodHook.Unhook unhook = hookMethod(m, callback);
+		Unhook unhook = hookMethod(m, callback);
 		if (!(callback instanceof XC_MethodKeepHook
 				|| callback instanceof XC_MethodKeepReplacement)) {
 			synchronized (allUnhookCallbacks) {
@@ -184,8 +184,8 @@ public final class DexposedBridge {
 		}
 	}
 	
-	public static Set<XC_MethodHook.Unhook> hookAllConstructors(Class<?> hookClass, XC_MethodHook callback) {
-		Set<XC_MethodHook.Unhook> unhooks = new HashSet<XC_MethodHook.Unhook>();
+	public static Set<Unhook> hookAllConstructors(Class<?> hookClass, XC_MethodHook callback) {
+		Set<Unhook> unhooks = new HashSet<Unhook>();
 		for (Member constructor : hookClass.getDeclaredConstructors())
 			unhooks.add(hookMethod(constructor, callback));
 		return unhooks;
@@ -285,15 +285,18 @@ public final class DexposedBridge {
 	private static boolean loadDexposedLib(Context context) {
 		// load dexposed lib for hook.
 		try {
-			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT < 21){
-				System.loadLibrary("dexposed_l");
-			} else if (android.os.Build.VERSION.SDK_INT > 14){
+			if ( VERSION.SDK_INT >= 22 ){
+				System.loadLibrary("dexposed_art_51");
+			}else if (VERSION.SDK_INT > 19 && VERSION.SDK_INT <= 21){
+				System.loadLibrary("dexposed_art_50");
+			} else if (VERSION.SDK_INT >= 10){
 				System.loadLibrary("dexposed");
 			} else {
 				return false;
 			}
 			return true;
 		} catch (Throwable e) {
+			log(e);
 			return false;
 		}
 	}

@@ -1,0 +1,173 @@
+apply plugin: 'com.android.model.application'
+
+model{
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            applicationId = "com.taobao.dexposed.art"
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    //when debug this pro, exclude libso in dexposed
+    android.packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_50.so'
+        pickFirst 'lib/x86/libdexposed_art_50.so'
+
+        pickFirst 'lib/armeabi-v7a/libdexposed_art_51.so'
+        pickFirst 'lib/x86/libdexposed_art_51.so'
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                CFlags += ["-DNDEBUG", "-O3"]
+                cppFlags += ["-DNDEBUG", "-O3"]
+
+            }
+        }
+
+        debug {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                CFlags += ["-UNDEBUG", "-O0"]
+                cppFlags += ["-UNDEBUG", "-O0"]
+
+            }
+        }
+    }
+
+    android.ndk {
+        toolchain = "gcc"
+        toolchainVersion = "4.9"
+
+        moduleName = "dexposed_art_22"
+
+        CFlags += ["-D_USING_LIBCXX", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-fPIC"]
+        cppFlags += ["-std=c++0x", "-DANDROID_SMP=0", "-DDYNAMIC_ANNOTATIONS_ENABLED=1", "-DIMT_SIZE=64"]
+
+        ldLibs += ["c++", "art", "cutils","utils", "log",  "m", "c", "atomic", "z", "art_quick_dexposed_invoke_handler"]
+
+        abiFilters += ["x86"]
+        abiFilters += ["armeabi-v7a"]
+
+        ldFlags += "-Lsrc/main/jniLibs/x86"
+        ldFlags += "-Lsrc/main/jniLibs/armeabi-v7a"
+
+        //use stl = "c++_static" get big so file, so use libc++.so
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def ndkDir = properties.getProperty('ndk.dir')
+
+        cppFlags  += "-I${ndkDir}/sources/cxx-stl/llvm-libc++/libcxx/include".toString()
+        cppFlags  += "-I${ndkDir}/sources/cxx-stl/llvm-libc++abi/libcxxabi/include".toString()
+        cppFlags  += "-I${ndkDir}/sources/android/support/include".toString()
+    }
+
+    android.productFlavors {
+        create("android_51") {
+            ndk.with {
+                moduleName = "dexposed_art_51"
+
+                cppFlags += ["-DPLATFORM_SDK_VERSION=22" ]
+
+                def android_branch = "android-5.1.0_r5";
+
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
+
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/entrypoints/quick".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/gtest/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/libcxx/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include/nativehelper".toString()
+            }
+        }
+
+        create("android_50") {
+            ndk.with {
+                moduleName = "dexposed_art_50"
+
+                cppFlags += ["-DPLATFORM_SDK_VERSION=21" ]
+
+                def android_branch = "android-5.0.2_r3";
+
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+                ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
+
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/entrypoints/quick".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/gtest/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/valgrind/main/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/libcxx/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
+                cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include/nativehelper".toString()
+
+            }
+        }
+    }
+
+}
+
+dependencies {
+    compile project(':dexposed')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task buildAssemble(type:Exec){
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkDir = properties.getProperty('ndk.dir')
+    def android_branch = "android-5.0.2_r3";
+
+    commandLine "${ndkDir}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-g++",
+            "--sysroot=${ndkDir}/platforms/android-21/arch-arm",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/arm",
+            "${getProjectDir()}/src/main/jni/art_quick_dexposed_invoke_handler.S",
+            "-o","${getProjectDir()}/src/main/jniLibs/armeabi-v7a/libart_quick_dexposed_invoke_handler.so",
+            "-c"
+
+}
+
+task buildX86Assemble(type:Exec){
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkDir = properties.getProperty('ndk.dir')
+    def android_branch = "android-5.0.2_r3";
+
+    commandLine "${ndkDir}/toolchains/x86-4.9/prebuilt/darwin-x86_64/bin/i686-linux-android-g++",
+            "--sysroot=${ndkDir}/platforms/android-21/arch-arm",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime",
+            "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/art/runtime/arch/x86",
+            "${getProjectDir()}/src/main/jni/art_quick_dexposed_invoke_handler.S",
+            "-o","${getProjectDir()}/src/main/jniLibs/x86/libart_quick_dexposed_invoke_handler.so",
+            "-c"
+
+}
+
+buildAssemble.dependsOn buildX86Assemble

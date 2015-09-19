@@ -1,26 +1,23 @@
 apply plugin: 'com.android.library'
-
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    buildToolsVersion = "22.0.1"
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
 }
-
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.3.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
-
-
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'dexposed'
@@ -44,12 +41,8 @@ ext {
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     allLicenses = ["Apache-2.0"]
 }
-
-
 apply plugin: 'com.github.dcendents.android-maven'
-
 group = publishedGroupId                               // Maven Group ID for the artifact
-
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
@@ -88,21 +81,16 @@ install {
         }
     }
 }
-
 apply plugin: 'com.jfrog.bintray'
-
 version = libraryVersion
-
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
-
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
-
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
@@ -111,11 +99,9 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
-
 // Bintray
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
@@ -141,5 +127,36 @@ bintray {
     }
 }
 
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+
+// copy libso
+task copyX86JniLIbs(type: Copy){
+    from '../dexposed_dalvik/build/intermediates/binaries/release/lib/x86/libdexposed.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_50/lib/x86/libdexposed_art_50.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_51/lib/x86/libdexposed_art_51.so'
+
+    into 'src/main/jniLibs/x86/'
+}
+
+task copyArmeabiJniLIbs(type: Copy){
+    from '../dexposed_dalvik/build/intermediates/binaries/release/lib/armeabi-v7a/libdexposed.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_50/lib/armeabi-v7a/libdexposed_art_50.so'
+    from '../dexposed_art/build/intermediates/binaries/release/android_51/lib/armeabi-v7a/libdexposed_art_51.so'
+
+    into 'src/main/jniLibs/armeabi-v7a/'
+}
+
+// build libso
+copyX86JniLIbs.dependsOn(':dexposed_dalvik:compileReleaseSources')
+copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_50ReleaseSources')
+copyX86JniLIbs.dependsOn(':dexposed_art:compileAndroid_51ReleaseSources')
+
+copyArmeabiJniLIbs.dependsOn copyX86JniLIbs
+
+assembleRelease.dependsOn copyArmeabiJniLIbs //TODO: release build no work, must be debug build !!!
+assembleDebug.dependsOn copyArmeabiJniLIbs
 
 

@@ -1,0 +1,72 @@
+apply plugin: 'com.android.model.application'
+
+model{
+    android {
+        compileSdkVersion = 19
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            applicationId = "com.taobao.dexposed.dalvik"
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 19
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    android.packagingOptions {
+        pickFirst 'lib/armeabi-v7a/libdexposed.so'
+        pickFirst 'lib/x86/libdexposed.so'
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+
+            ndk.with {
+                CFlags += ["-O3"]
+                cppFlags += ["-DNDEBUG", "-O3"]
+            }
+        }
+    }
+
+    android.ndk {
+        moduleName = "dexposed"
+
+        toolchain = "gcc"
+        toolchainVersion = "4.9"
+
+        cppFlags += ["-DPLATFORM_SDK_VERSION=14", "-DHAVE_LITTLE_ENDIAN", "-D__ARM_ARCH_7__"]
+        ldLibs += ["cutils","utils", "binder", "android_runtime", "dvm", "stlport", "dl"]
+
+        abiFilters += ["x86"]
+        abiFilters += ["armeabi-v7a"]
+
+        def android_branch = "android-2.3.3_r1.1";
+
+        ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/x86".toString()
+        ldFlags += "-L${getRootDir()}/dexposed-AOSP/${android_branch}/jniLibs/armeabi-v7a".toString()
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def ndkDir = properties.getProperty('ndk.dir')
+
+        cppFlags  += "-I${ndkDir}/sources/cxx-stl/stlport/stlport".toString()
+
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/dalvik".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/dalvik/vm".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/external/stlport/stlport".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/bionic".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/bionic/libstdc++/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/system/core/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/native/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/frameworks/base/include".toString()
+        cppFlags  += "-I${getRootDir()}/dexposed-AOSP/${android_branch}/include/libnativehelper/include".toString()
+    }
+}
+
+dependencies {
+    compile project(':dexposed')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
