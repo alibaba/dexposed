@@ -1,5 +1,10 @@
 What is it?
 -----------
+
+[![Download](https://api.bintray.com/packages/hwjump/maven/dexposed/images/download.svg) ](https://bintray.com/hwjump/maven/dexposed/_latestVersion)
+[![Software License](https://rawgit.com/alibaba/dexposed/master/images/license.svg)](LICENSE)
+[![Join the chat at https://gitter.im/alibaba/dexposed](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alibaba/dexposed?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)   
+
 Dexposed is a powerful yet non-invasive runtime [AOP (Aspect-oriented Programming)](http://en.wikipedia.org/wiki/Aspect-oriented_programming) framework
 for Android app development, based on the work of open-source [Xposed](https://github.com/rovo89/Xposed) [framework](https://github.com/rovo89/XposedBridge) project.
 
@@ -106,18 +111,16 @@ Dexposed support all dalvik runtime arm architecture devices from Android 2.3 to
 
 Follow is support status.
 
-* Runtime   Android Version  Support
-* Dalvik    2.2              Not Test 
-* Dalvik    2.3              Yes      
-* Dalvik    3.0              No       
-* Dalvik    4.0-4.4          Yes      
-* ART       5.0              Testing  
-* ART       5.1              No       
-* ART       M                No   
-
-Chat
-----------
-[![Join the chat at https://gitter.im/alibaba/dexposed](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alibaba/dexposed?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)    
+Runtime | Android Version | Support
+------  | --------------- | --------
+Dalvik  | 2.2             | Not Test
+Dalvik  | 2.3             | Yes
+Dalvik  | 3.0             | No
+Dalvik  | 4.0-4.4         | Yes
+ART     | 5.0             | Testing
+ART     | 5.1             | No
+ART     | M               | No
+ 
 
 Contribute
 ----------
