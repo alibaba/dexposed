@@ -21,12 +21,15 @@ public class MainActivity extends Activity {
 	static {
 		// load xposed lib for hook.
 		try {
-			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT <= 21){
+			if (android.os.Build.VERSION.SDK_INT == 22){
+				System.loadLibrary("dexposed_l51");
+			} else if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT <= 21){
 				System.loadLibrary("dexposed_l");
 			} else if (android.os.Build.VERSION.SDK_INT > 14){
 				System.loadLibrary("dexposed");
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -42,7 +45,7 @@ public class MainActivity extends Activity {
 		mLogContent = (TextView) (this.findViewById(R.id.log_content));
 		// check device if support and auto load libs
         isSupport = true;
-		isLDevice = android.os.Build.VERSION.SDK_INT == 21;
+		isLDevice = android.os.Build.VERSION.SDK_INT >= 20;
 	}
 
 	//Hook system log click

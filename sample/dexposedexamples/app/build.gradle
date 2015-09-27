@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.taobao.dexposed"
+        applicationId "com.taobao.android.dexposed"
         minSdkVersion 15
         targetSdkVersion 21
         versionName "1.0"
@@ -25,6 +25,6 @@ android {
 }
 
 dependencies {
-    compile( 'com.taobao.android:dexposed:0.1.6@aar')
-//    compile project(':dexposed')
+    compile( 'com.taobao.android:dexposed:0.1.7@aar')
+    //compile project(':dexposed')
 }
