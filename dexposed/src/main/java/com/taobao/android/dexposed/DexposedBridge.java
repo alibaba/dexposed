@@ -285,7 +285,9 @@ public final class DexposedBridge {
 	private static boolean loadDexposedLib(Context context) {
 		// load dexposed lib for hook.
 		try {
-			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT < 21){
+			if (android.os.Build.VERSION.SDK_INT == 22){
+				System.loadLibrary("dexposed_l51");
+			} else if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT <= 21){
 				System.loadLibrary("dexposed_l");
 			} else if (android.os.Build.VERSION.SDK_INT > 14){
 				System.loadLibrary("dexposed");

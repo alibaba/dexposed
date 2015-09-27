@@ -133,8 +133,13 @@ namespace art {
 		    }
 		  }
 
-	  const DexposedHookInfo* hookInfo =
-				(DexposedHookInfo*) (soa.DecodeMethod(method)->GetNativeMethod());
+#if PLATFORM_SDK_VERSION < 22
+        const DexposedHookInfo *hookInfo =
+                (DexposedHookInfo *) (soa.DecodeMethod(method)->GetNativeMethod());
+#else
+        const DexposedHookInfo *hookInfo =
+                (DexposedHookInfo *) (soa.DecodeMethod(method)->GetEntryPointFromJni());
+#endif
 
 	  // Call XposedBridge.handleHookedMethod(Member method, int originalMethodId, Object additionalInfoObj,
 	  //                                      Object thisObject, Object[] args)
@@ -261,7 +266,12 @@ namespace art {
 	  hookInfo->reflectedMethod = env->NewGlobalRef(reflect_method);
 	  hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
 	  hookInfo->originalMethod = backup_method;
-	  art_method->SetNativeMethod(reinterpret_cast<uint8_t*>(hookInfo));
+
+#if PLATFORM_SDK_VERSION < 22
+        art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));
+#else
+        art_method->SetEntryPointFromJni(reinterpret_cast<void *>(hookInfo));
+#endif
 
 	  art_method->SetEntryPointFromQuickCompiledCode(GetQuickDexposedInvokeHandler());
 //	  art_method->SetEntryPointFromInterpreter(art::artInterpreterToCompiledCodeBridge);

@@ -5,7 +5,7 @@ LOCAL_SRC_FILES := \
 	dexposed.cpp \
 	art_quick_dexposed_invoke_handler.S
 
-LOCAL_CFLAGS += -std=c++0x -O0
+LOCAL_CFLAGS += -std=c++0x -O0 -DPLATFORM_SDK_VERSION=$(PLATFORM_SDK_VERSION) -Wno-unused-parameter 
 LOCAL_C_INCLUDES := \
 	$(JNI_H_INCLUDE) \
 	art/runtime/ \
@@ -18,11 +18,23 @@ LOCAL_C_INCLUDES := \
 
 include external/libcxx/libcxx.mk
 
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 21)))
+	ifdef ART_IMT_SIZE
+	  LOCAL_CFLAGS += -DIMT_SIZE=$(ART_IMT_SIZE)
+	else
+	  # Default is 64
+	  LOCAL_CFLAGS += -DIMT_SIZE=64
+	endif
+endif
 
 LOCAL_SHARED_LIBRARIES := libutils liblog libart libc++ libcutils
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_MODULE := libdexposed_l
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 21)))
+	LOCAL_MODULE := libdexposed_l51
+else
+	LOCAL_MODULE := libdexposed_l
+endif
 
 include $(BUILD_SHARED_LIBRARY)
