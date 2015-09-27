@@ -34,7 +34,7 @@ ext {
     siteUrl = 'https://github.com/alibaba/dexposed'
     gitUrl = 'https://github.com/alibaba/dexposed.git'
 
-    libraryVersion = '0.1.6'
+    libraryVersion = '0.1.7'
 
     developerId = 'alibaba'
     developerName = 'hwjump'
