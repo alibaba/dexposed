@@ -36,6 +36,8 @@ namespace art {
 
 	jclass dexposed_class = NULL;
 	jmethodID dexposed_handle_hooked_method = NULL;
+	jclass additionalhookinfo_class = NULL;
+	jfieldID  additionalhookinfo_shorty_field = NULL;
 
 	void logMethod(const char* tag, ArtMethod* method) {
 		LOG(INFO) << "dexposed:" << tag << " " << method << " " << PrettyMethod(method);
@@ -48,6 +50,14 @@ namespace art {
 
 		if (dexposed_class == NULL) {
 			LOG(ERROR) << "dexposed: Error while loading Dexposed class " << DEXPOSED_CLASS;
+			env->ExceptionClear();
+			return false;
+		}
+
+		additionalhookinfo_class = env->FindClass(DEXPOSED_ADDITIONAL_CLASS);
+		additionalhookinfo_class = reinterpret_cast<jclass>(env->NewGlobalRef(additionalhookinfo_class));
+		if (additionalhookinfo_class == NULL) {
+			LOG(ERROR) << "dexposed: Error while loading Dexposed class " << DEXPOSED_ADDITIONAL_CLASS;
 			env->ExceptionClear();
 			return false;
 		}
@@ -74,6 +84,16 @@ namespace art {
 			env->ExceptionClear();
 			return false;
 		}
+
+
+		additionalhookinfo_shorty_field =
+				env->GetFieldID(additionalhookinfo_class, "shorty", "Ljava/lang/String;");
+		if (additionalhookinfo_shorty_field == NULL) {
+			LOG(ERROR) << "dexposed: Could not find field " << DEXPOSED_ADDITIONAL_CLASS << ".shorty";
+			env->ExceptionClear();
+			return false;
+		}
+
 		return true;
 	}
 
@@ -187,7 +207,7 @@ namespace art {
 
 		const bool is_static = proxy_method->IsStatic();
 
-		LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler " << is_static;
+		LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler isStatic:" << is_static;
 
 		// Ensure we don't get thread suspension until the object arguments are safely in jobjects.
 		const char* old_cause = self->StartAssertNoThreadSuspension(
@@ -211,8 +231,20 @@ namespace art {
 		ArtMethod* non_proxy_method = proxy_method->GetInterfaceMethodIfProxy();
 
 		std::vector < jvalue > args;
+
+#if PLATFORM_SDK_VERSION < 22
+        const DexposedHookInfo *hookInfo =
+                (DexposedHookInfo *) (proxy_method->GetNativeMethod());
+#else
+        const DexposedHookInfo *hookInfo =
+                (DexposedHookInfo *) (proxy_method->GetEntryPointFromJni());
+#endif
+
+
 		uint32_t shorty_len = 0;
-		const char* shorty = proxy_method->GetShorty(&shorty_len);
+//		const char* shorty = proxy_method->GetShorty(&shorty_len);
+		const char* shorty = hookInfo->shorty;
+		shorty_len = strlen(hookInfo->shorty);
 
 		for(int i=0; i<shorty_len; ++i){
 			LOG(INFO) << "dexposed: artQuickDexposedInvokeHandler " << "shorty[" << i << "]:" << shorty[i];
@@ -266,6 +298,10 @@ namespace art {
 	  hookInfo->reflectedMethod = env->NewGlobalRef(reflect_method);
 	  hookInfo->additionalInfo = env->NewGlobalRef(additional_info);
 	  hookInfo->originalMethod = backup_method;
+
+	  jstring shorty = (jstring)env->GetObjectField(additional_info,additionalhookinfo_shorty_field);
+	  hookInfo->shorty = env->GetStringUTFChars(shorty, 0);
+	  LOG(INFO) << "dexposed: >>> EnableXposedHook shorty:" << hookInfo->shorty;
 
 #if PLATFORM_SDK_VERSION < 22
         art_method->SetNativeMethod(reinterpret_cast<uint8_t *>(hookInfo));

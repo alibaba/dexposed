@@ -37,6 +37,7 @@
 #include <throw_location.h>
 #include <stack.h>
 #include <jni_internal.h>
+#include <dex_file.h>
 
 using art::mirror::ArtMethod;
 using art::mirror::Array;
@@ -64,6 +65,7 @@ using art::ScopedJniEnvLocalRefState;
 using art::ThrowLocation;
 
 #define DEXPOSED_CLASS "com/taobao/android/dexposed/DexposedBridge"
+#define DEXPOSED_ADDITIONAL_CLASS "com/taobao/android/dexposed/DexposedBridge$AdditionalHookInfo"
 #define DEXPOSED_CLASS_DOTS "com.taobao.android.dexposed.DexposedBridge"
 
 //#define PLATFORM_SDK_VERSION 21
@@ -75,6 +77,7 @@ namespace art {
         jobject reflectedMethod;
         jobject additionalInfo;
         mirror::ArtMethod* originalMethod;
+        const char *shorty;
     };
 
     static bool dexposedIsHooked(ArtMethod* method);

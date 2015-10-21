@@ -81,7 +81,7 @@ public final class DexposedBridge {
 	 * @param text log message
 	 */
 	public synchronized static void log(String text) {
-		log(text);
+		Log.d("Dexposed", text);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public final class DexposedBridge {
 		}	
 		callbacks.remove(callback);
 	}
-	
+
 	public static Set<XC_MethodHook.Unhook> hookAllMethods(Class<?> hookClass, String methodName, XC_MethodHook callback) {
 		Set<XC_MethodHook.Unhook> unhooks = new HashSet<XC_MethodHook.Unhook>();
 		for (Member method : hookClass.getDeclaredMethods())
@@ -370,6 +370,7 @@ public final class DexposedBridge {
 		if (method instanceof Method) {
 			parameterTypes = ((Method) method).getParameterTypes();
 			returnType = ((Method) method).getReturnType();
+
 		} else if (method instanceof Constructor) {
 			parameterTypes = ((Constructor<?>) method).getParameterTypes();
 			returnType = null;
@@ -429,11 +430,41 @@ public final class DexposedBridge {
 		final CopyOnWriteSortedSet<XC_MethodHook> callbacks;
 		final Class<?>[] parameterTypes;
 		final Class<?> returnType;
+		String shorty;
 
 		private AdditionalHookInfo(CopyOnWriteSortedSet<XC_MethodHook> callbacks, Class<?>[] parameterTypes, Class<?> returnType) {
 			this.callbacks = callbacks;
 			this.parameterTypes = parameterTypes;
 			this.returnType = returnType;
+
+			StringBuilder sb = new StringBuilder(64);
+			sb.append(Class2Shorty(returnType));
+			for(Class<?> c : parameterTypes){
+				sb.append(Class2Shorty(c));
+			}
+
+			shorty = sb.toString();
+		}
+
+		String Class2Shorty(Class<?> cls) {
+			if(cls.isPrimitive()){
+				return builtInMap.get(cls);
+			} else
+				return "L";
 		}
 	}
+
+	private static Map<Class, String> builtInMap = new HashMap<Class, String>(){
+		{
+			put(Integer.TYPE, "I");
+			put(Long.TYPE, "J");
+			put(Double.TYPE, "D" );
+			put(Float.TYPE, "F" );
+			put(Boolean.TYPE, "Z" );
+			put(Character.TYPE, "C" );
+			put(Byte.TYPE, "B" );
+			put(Void.TYPE, "V" );
+			put(Short.TYPE, "S" );
+		}
+	};
 }
