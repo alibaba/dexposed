@@ -18,7 +18,7 @@ LOCAL_C_INCLUDES := \
 
 include external/libcxx/libcxx.mk
 
-ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 21)))
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 22)))
 	ifdef ART_IMT_SIZE
 	  LOCAL_CFLAGS += -DIMT_SIZE=$(ART_IMT_SIZE)
 	else
@@ -27,14 +27,16 @@ ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 21)))
 	endif
 endif
 
-LOCAL_SHARED_LIBRARIES := libutils liblog libart libc++ libcutils
+LOCAL_SHARED_LIBRARIES := libutils liblog libart libc++ libcutils libdl
 
 LOCAL_MODULE_TAGS := optional
 
-ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 21)))
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 22)))
 	LOCAL_MODULE := libdexposed_l51
 else
 	LOCAL_MODULE := libdexposed_l
 endif
+
+LOCAL_MULTILIB := both
 
 include $(BUILD_SHARED_LIBRARY)
