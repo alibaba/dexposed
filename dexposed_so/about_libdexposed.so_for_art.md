@@ -1,6 +1,6 @@
 libdexposed.so for Art 
 -----------
-Due to ART's complexity, libdexposed.so for art in Master branch has some critical defect, it may bring a lot of maintenance effort. After do some research into the art source code, and some open source library. I think there still has some change to do ArtMethod AOP hook. Please refer to the dev_art branch. I upload some prototype for hook ArtMethod. Current now it still is in beta, and didn't do a lot test.
+Due to ART's complexity, libdexposed.so for art in Master branch has some critical defect, it may bring a lot of maintenance effort. After do some research into the art source code, and some open source library. I think there still has some chance to do ArtMethod AOP hook. Please refer to the dev_art branch. I upload some prototype for hook ArtMethod. Current now it still is in beta, and didn't do a lot test.
 
 **Don't use it in production environment.**
 

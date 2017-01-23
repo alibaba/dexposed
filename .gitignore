@@ -18,6 +18,8 @@ dependencies.txt
 /dexposed/.idea
 /dexposed/build
 /dexposed/.gradle
+/dexposed/dexposed/build
+/dexposed/dexposed/.gradle
 /dexposed/.DS_Store
 /sample/dexposedexamples/.gradle
 /sample/dexposedexamples/local.properties
