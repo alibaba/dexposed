@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import android.content.Context;
-import android.os.Build.VERSION;
 import android.util.Log;
 
 import com.taobao.android.dexposed.XC_MethodHook.MethodHookParam;
@@ -41,14 +40,11 @@ import com.taobao.android.dexposed.XC_MethodHook.Unhook;
 import com.taobao.android.dexposed.XC_MethodHook.XC_MethodKeepHook;
 import com.taobao.android.dexposed.XC_MethodReplacement.XC_MethodKeepReplacement;
 import com.taobao.android.dexposed.XposedHelpers.InvocationTargetError;
+import com.taobao.android.dexposed.art.hook.Scenario;
+import com.taobao.android.dexposed.utility.Runtime;
 
 
 public final class DexposedBridge {
-
-	private static final int RUNTIME_UNKNOW = 0;
-	private static final int RUNTIME_DALVIK = 1;
-	private static final int RUNTIME_ART = 2;
-	private static int runtime = RUNTIME_UNKNOW;
 	
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 	public static final ClassLoader BOOTCLASSLOADER = ClassLoader.getSystemClassLoader();
@@ -60,21 +56,6 @@ public final class DexposedBridge {
 	
 	private static final ArrayList<XC_MethodHook.Unhook> allUnhookCallbacks = new ArrayList<XC_MethodHook.Unhook>();
 
-	
-	private static int getRuntime() {
-
-		if(VERSION.SDK_INT >= 21){
-			return RUNTIME_ART;
-		} else if(VERSION.SDK_INT >= 20) {
-			String vm = System.getProperty("persist.sys.dalvik.vm.lib", "");
-			if(vm.contains("art"))
-				return RUNTIME_ART;
-			else
-				return RUNTIME_DALVIK;
-		} else {
-			return RUNTIME_DALVIK;
-		}
-	}
 
 	/**
 	 * Writes a message to BASE_DIR/log/debug.log (needs to have chmod 777)
@@ -103,7 +84,7 @@ public final class DexposedBridge {
 		if (!(hookMethod instanceof Method) && !(hookMethod instanceof Constructor<?>)) {
 			throw new IllegalArgumentException("only methods and constructors can be hooked");
 		}
-		
+
 		boolean newMethod = false;
 		CopyOnWriteSortedSet<XC_MethodHook> callbacks;
 		synchronized (hookedMethodCallbacks) {
@@ -117,8 +98,7 @@ public final class DexposedBridge {
 		callbacks.add(callback);
 		if (newMethod) {
 			Class<?> declaringClass = hookMethod.getDeclaringClass();
-			if(runtime == RUNTIME_UNKNOW)  runtime = getRuntime();
-			int slot = (runtime == RUNTIME_DALVIK) ? (int) getIntField(hookMethod, "slot") : 0;
+			int slot = !Runtime.isArt() ? (int) getIntField(hookMethod, "slot") : 0;
 
 			Class<?>[] parameterTypes;
 			Class<?> returnType;
@@ -131,12 +111,17 @@ public final class DexposedBridge {
 			}
 
 			AdditionalHookInfo additionalInfo = new AdditionalHookInfo(callbacks, parameterTypes, returnType);
-			hookMethodNative(hookMethod, declaringClass, slot, additionalInfo);
+
+			if(!Runtime.isArt())
+				hookMethodNative(hookMethod, declaringClass, slot, additionalInfo);
+			else {
+				Scenario.hookMethod((Method)hookMethod);
+			}
 		}
 		return callback.new Unhook(hookMethod);
 	}
-	
-	/** 
+
+	/**
 	 * Removes the callback for a hooked method
 	 * @param hookMethod The method for which the callback should be removed
 	 * @param callback The reference to the callback as specified in {@link #hookMethod}
@@ -150,7 +135,7 @@ public final class DexposedBridge {
 		}	
 		callbacks.remove(callback);
 	}
-	
+
 	public static Set<XC_MethodHook.Unhook> hookAllMethods(Class<?> hookClass, String methodName, XC_MethodHook callback) {
 		Set<XC_MethodHook.Unhook> unhooks = new HashSet<XC_MethodHook.Unhook>();
 		for (Member method : hookClass.getDeclaredMethods())
@@ -190,7 +175,93 @@ public final class DexposedBridge {
 			unhooks.add(hookMethod(constructor, callback));
 		return unhooks;
 	}
-	
+
+
+	public static Object handleHookedArtMethod(Object artmethod, Object thisObject, Object[] args) {
+
+		CopyOnWriteSortedSet<XC_MethodHook> callbacks;
+		synchronized (hookedMethodCallbacks) {
+			callbacks = hookedMethodCallbacks.get(artmethod);
+		}
+		Object[] callbacksSnapshot = callbacks.getSnapshot();
+		final int callbacksLength = callbacksSnapshot.length;
+		if (callbacksLength == 0) {
+			try {
+				Method method = Scenario.getBackMethod((Method)artmethod);
+				return method.invoke(thisObject, args);
+			} catch (Exception e) {
+				log(e.getCause());
+			}
+		}
+
+		MethodHookParam param = new MethodHookParam();
+		param.method  = (Member) artmethod;
+		param.thisObject = thisObject;
+		param.args = args;
+
+		// call "before method" callbacks
+		int beforeIdx = 0;
+		do {
+			try {
+				((XC_MethodHook) callbacksSnapshot[beforeIdx]).beforeHookedMethod(param);
+			} catch (Throwable t) {
+				log(t);
+
+				// reset result (ignoring what the unexpectedly exiting callback did)
+				param.setResult(null);
+				param.returnEarly = false;
+				continue;
+			}
+
+			if (param.returnEarly) {
+				// skip remaining "before" callbacks and corresponding "after" callbacks
+				beforeIdx++;
+				break;
+			}
+		} while (++beforeIdx < callbacksLength);
+
+		// call original method if not requested otherwise
+		if (!param.returnEarly) {
+			try {
+				Method method = Scenario.getBackMethod((Method)artmethod);
+
+
+
+				Object result = method.invoke(thisObject, args);
+				param.setResult(result);
+			} catch (Exception e) {
+				param.setThrowable(e.getCause());
+			}
+		}
+
+		// call "after method" callbacks
+		int afterIdx = beforeIdx - 1;
+		do {
+			Object lastResult =  param.getResult();
+			Throwable lastThrowable = param.getThrowable();
+
+			try {
+				((XC_MethodHook) callbacksSnapshot[afterIdx]).afterHookedMethod(param);
+			} catch (Throwable t) {
+				DexposedBridge.log(t);
+
+				// reset to last result (ignoring what the unexpectedly exiting callback did)
+				if (lastThrowable == null)
+					param.setResult(lastResult);
+				else
+					param.setThrowable(lastThrowable);
+			}
+		} while (--afterIdx >= 0);
+
+		// return
+		if (param.hasThrowable()) {
+			//todo
+			//throw param.getThrowable();
+			return null;
+		}else
+			return param.getResult();
+	}
+
 	/**
 	 * This method is called as a replacement for hooked methods.
 	 */
@@ -271,30 +342,45 @@ public final class DexposedBridge {
 			return param.getResult();
 	}
 	
-	/**
-	 * Check device if can run dexposed, and load libs auto.
-	 */
-	public synchronized static boolean canDexposed(Context context) {
-		if (!DeviceCheck.isDeviceSupport(context)) {
-			return false;
-		}
-		//load dexposed lib for hook.
-		return loadDexposedLib(context);
-	}
-	
-	private static boolean loadDexposedLib(Context context) {
-		// load dexposed lib for hook.
+//	/**
+//	 * Check device if can run dexposed, and load libs auto.
+//	 */
+//	public synchronized static boolean canDexposed(Context context) {
+//		if (!DeviceCheck.isDeviceSupport(context)) {
+//			return false;
+//		}
+//		//load dexposed lib for hook.
+//		return loadDexposedLib(context);
+//	}
+//
+//	private static boolean loadDexposedLib(Context context) {
+//		// load dexposed lib for hook.
+//		try {
+//			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT <= 23 ){
+//				System.loadLibrary("dexposed_art");
+//			} else if (android.os.Build.VERSION.SDK_INT > 14){
+//				System.loadLibrary("dexposed");
+//			} else {
+//				return false;
+//			}
+//			return true;
+//		} catch (Throwable e) {
+//			return false;
+//		}
+//	}
+
+	static {
 		try {
-			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT < 21){
-				System.loadLibrary("dexposed_l");
+			if (android.os.Build.VERSION.SDK_INT > 19 && android.os.Build.VERSION.SDK_INT <= 23 ){
+				System.loadLibrary("dexposed_art");
 			} else if (android.os.Build.VERSION.SDK_INT > 14){
 				System.loadLibrary("dexposed");
 			} else {
-				return false;
+
 			}
-			return true;
+
 		} catch (Throwable e) {
-			return false;
+			log(e);
 		}
 	}
 	
@@ -306,10 +392,8 @@ public final class DexposedBridge {
 	public static Object invokeSuper(Object obj, Member method, Object... args) throws NoSuchFieldException {
 		
 		try {
-			if(runtime == RUNTIME_UNKNOW)  runtime = getRuntime();
-
 			int slot = 0;
-			if(runtime == RUNTIME_DALVIK) {
+			if(!Runtime.isArt()) {
 				//get the super method slot
 				Method m = XposedHelpers.findMethodExact(obj.getClass().getSuperclass(), method.getName(), ((Method) method).getParameterTypes());
 				slot =  (int) getIntField(m, "slot");

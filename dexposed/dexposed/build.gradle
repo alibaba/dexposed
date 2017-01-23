@@ -1,0 +1,193 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    defaultConfig {
+
+//        ndk {
+//            moduleName "dexposed_art"
+//            ldLibs "log"
+//            stl "gnustl_static"
+//            cFlags "-DABI=\"\$(TARGET_ARCH_ABI)\" -DANDROID_NDK -std=gnu++11 -fexceptions -fpermissive"
+//            abiFilters 'arm64-v8a'
+//            if(abiFilters == 'arm64-v8a') {
+//                cFlags "-DARME64_V8A -DANDROID_NDK -std=gnu++11 -fexceptions -fpermissive"
+//            }
+//        }
+    }
+
+//    sourceSets.main.jni.srcDirs = ['src/main/jni']
+
+    sourceSets.main {
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
+// call regular ndk-build(.cmd) script from app directory
+    task ndkBuild(type: Exec) {
+        def rootDir = project.rootDir
+        def localProperties = new File(rootDir, "local.properties")
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+
+        def ndkDir = properties.getProperty('ndk.dir')
+        println ndkDir
+
+        commandLine "$ndkDir/ndk-build",
+                    'NDK_PROJECT_PATH=build/intermediates/ndk',
+                    'NDK_LIBS_OUT=src/main/libs',
+                    'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
+                    'NDK_APPLICATION_MK=src/main/jni/Application.mk'
+
+        copy {
+            from new File("./src/main/libs")
+            into new File("./src/main/jniLibs")
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+    }
+}
+
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'dexposed'
+
+    publishedGroupId = 'com.taobao.android'
+    libraryName = 'dexposed'
+    artifact = 'dexposed'
+
+    libraryDescription = 'A powerful AOP library for Android'
+
+    siteUrl = 'https://github.com/alibaba/dexposed'
+    gitUrl = 'https://github.com/alibaba/dexposed.git'
+
+    libraryVersion = '0.1.8'
+
+    developerId = 'alibaba'
+    developerName = 'hwjump'
+    developerEmail = 'baiyi.hwj@taobao.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+/*
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = publishedGroupId                               // Maven Group ID for the artifact
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                groupId publishedGroupId
+                artifactId artifact
+
+                // Add your description here
+                name libraryName
+                description libraryDescription
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name licenseName
+                        url licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+
+version = libraryVersion
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password")
+                //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
+}
+*/
+
+
