@@ -32,19 +32,29 @@ android {
     task ndkBuild(type: Exec) {
         def rootDir = project.rootDir
         def localProperties = new File(rootDir, "local.properties")
-        Properties properties = new Properties()
-        localProperties.withInputStream { instr ->
-            properties.load(instr)
+
+        if(localProperties.exists()){
+            Properties properties = new Properties()
+            localProperties.withInputStream { instr ->
+                properties.load(instr)
+            }
+
+            def ndkDir = properties.getProperty('ndk.dir')
+            println ndkDir
+
+            commandLine "$ndkDir/ndk-build",
+                        'NDK_PROJECT_PATH=build/intermediates/ndk',
+                        'NDK_LIBS_OUT=src/main/libs',
+                        'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
+                        'NDK_APPLICATION_MK=src/main/jni/Application.mk'
+        } else {
+
+            commandLine "${NDK_HOME}/ndk-build",
+                        'NDK_PROJECT_PATH=build/intermediates/ndk',
+                        'NDK_LIBS_OUT=src/main/libs',
+                        'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
+                        'NDK_APPLICATION_MK=src/main/jni/Application.mk'
         }
-
-        def ndkDir = properties.getProperty('ndk.dir')
-        println ndkDir
-
-        commandLine "$ndkDir/ndk-build",
-                    'NDK_PROJECT_PATH=build/intermediates/ndk',
-                    'NDK_LIBS_OUT=src/main/libs',
-                    'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
-                    'NDK_APPLICATION_MK=src/main/jni/Application.mk'
 
         copy {
             from new File("./src/main/libs")
