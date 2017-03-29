@@ -166,13 +166,13 @@ void dexposed_ptrace(JNIEnv* env, jclass, jint pid) {
 
 jlong dexposed_getMethodAddress(JNIEnv * env, jclass clazz, jobject method) {
     jlong art_method =  (jlong) env->FromReflectedMethod(method);
-/*
+
     LOGV("method jobject 0x%lx", method);
     int* methodstruct = (int*)art_method;
-     for(int i=0; i<80; ++i){
+     for(int i=0; i<20; ++i){
          LOGV("method struct 0x%lx sp[%d]: 0x%lx", (int)(methodstruct+i), i, *(methodstruct+i));
      }
-*/
+
     return art_method;
 }
 
@@ -236,7 +236,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
     LOGV("artQuickDexposedInvokeHandler arg8: 0x%lx",arg8);
 
     for(int i=0; i<20; ++i){
-        LOGV("artQuickDexposedInvokeHandler 0x%lx sp[%d]: 0x%lx", (int)(args+i), i, *(args+i));
+        LOGV("artQuickDexposedInvokeHandler 0x%lx sp[%d]: 0x%lx", (args+i), i, *(args+i));
     }
 
     JNIEnv* env = NULL;
@@ -250,7 +250,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
 
     LOGV("artQuickDexposedInvokeHandler size:%d", size);
 
-    jint* elements = env->GetIntArrayElements(params, (jboolean) 0);
+    jint* elements = env->GetIntArrayElements(params, 0);
 
     uint64_t* xargs = (uint64_t*)malloc(size*sizeof(uint64_t));
     jboolean isStatic = (jboolean) env->CallStaticBooleanMethod(gEntryClass, gMethods[9], method);
@@ -280,7 +280,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
 
     jobjectArray argbox = (jobjectArray)env->NewObjectArray(size, gObjectClass, NULL);
 
-    void* self = *((uint64_t*)(args - 54));
+    void* self = (void*)(*((uint64_t*)(args - 54)));
     LOGV("artQuickDexposedInvokeHandler self: 0x%lx", self);
 
     int index = 0;
@@ -291,7 +291,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
         switch(token) {
             case 0: {
                 //jobject arg = (jobject) env->NewWeakGlobalRef(xargs[index]);
-                jobject arg = (jobject) addWeakGloablReference(gJVM, self, xargs[index]);
+                jobject arg = (jobject) addWeakGloablReference(gJVM, self, (void*)xargs[index]);
                 offset = env->CallStaticIntMethod(gEntryClass, gMethods[token], argbox, index, arg);
                 break;}
             case 1: {
@@ -344,47 +344,47 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
         case 0:{
             jobject result = (jobject)env->CallStaticObjectMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:0 result：0x%lx", result);
-            return result;
+            return (uint64_t)result;
         }
         case 1:{
             jdouble result = (jdouble)env->CallStaticDoubleMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:1 result：%f", result);
-            return result;
+            return (uint64_t)result;
         }
         case 2:{
             jlong result = (jlong)env->CallStaticLongMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:2 result：0x%lx", result);
-            return result;
+            return (uint64_t)result;
         }
         case 3:{
             jbyte result = (jbyte)env->CallStaticByteMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:3 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 4:{
             jchar result = (jchar)env->CallStaticCharMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:4 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 5:{
             jboolean result = (jboolean)env->CallStaticBooleanMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:5 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 6:{
             jfloat result = (jfloat)env->CallStaticFloatMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:6 result：%f", result);
-            return result;
+            return (uint64_t)result;
         }
         case 7:{
             jshort result = (jshort)env->CallStaticShortMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:7 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 8:{
             jint result = (jint)env->CallStaticIntMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:8 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 9:{
             env->CallStaticVoidMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
@@ -406,8 +406,8 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
     LOGV("artQuickDexposedInvokeHandler sp1: 0x%lx",sp);
 
     int* args = (int*)sp;
-    int* self = *(args+1);
-    void* arg4 = *(args+2);
+    int* self = (int*)(*(args+1));
+    void* arg4 = (void*)(*(args+2));
 
     for(int i=0; i<40; ++i){
         LOGV("artQuickDexposedInvokeHandler1 0x%lx sp[%d]: 0x%lx", (int)(args+i), i, *(args+i));
@@ -423,7 +423,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
     jsize size = env->GetArrayLength(params);
 
     LOGV("artQuickDexposedInvokeHandler size:%d", size);
-    jint* elements = env->GetIntArrayElements(params, (jboolean) 0);
+    jint* elements = env->GetIntArrayElements(params, 0);
 
     args = args + 10 + 4;
 
@@ -454,7 +454,7 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
         LOGV("token [%d] %d", index, token);
         switch(token) {
             case 0: {
-                jobject arg = (jobject) addWeakGloablReference(gJVM, self, xargs[index]);
+                jobject arg = (jobject) addWeakGloablReference(gJVM, self, (void*)xargs[index]);
                 offset = env->CallStaticIntMethod(gEntryClass, gMethods[token], argbox, index, arg);
                 break;}
             case 1: {
@@ -507,47 +507,47 @@ extern "C" uint64_t  artQuickDexposedInvokeHandler(void* art_method, void* arg2,
         case 0:{
             jobject result = (jobject)env->CallStaticObjectMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:0 result：0x%lx", result);
-            return result;
+            return (uint64_t)result;
         }
         case 1:{
             jdouble result = (jdouble)env->CallStaticDoubleMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:1 result：%f", result);
-            return result;
+            return (uint64_t)result;
         }
         case 2:{
             jlong result = (jlong)env->CallStaticLongMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:2 result：0x%lx", result);
-            return result;
+            return (uint64_t)result;
         }
         case 3:{
             jbyte result = (jbyte)env->CallStaticByteMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:3 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 4:{
             jchar result = (jchar)env->CallStaticCharMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:4 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 5:{
             jboolean result = (jboolean)env->CallStaticBooleanMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:5 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 6:{
             jfloat result = (jfloat)env->CallStaticFloatMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:6 result：%f", result);
-            return result;
+            return (uint64_t)result;
         }
         case 7:{
             jshort result = (jshort)env->CallStaticShortMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:7 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 8:{
             jint result = (jint)env->CallStaticIntMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
             LOGV("artQuickDexposedInvokeHandler type:8 result：0x%x", result);
-            return result;
+            return (uint64_t)result;
         }
         case 9:{
             env->CallStaticVoidMethod(gEntryClass, gMethods[returnType], method, receiver, argbox);
