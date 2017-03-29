@@ -59,13 +59,16 @@ public abstract class ArtMethod extends Member {
                     ? new ArtMethodV23_64Bit(method)
                     : new ArtMethodV23(method);
         }
-        // The artmethod struct of Android 5.0 equals to V19,so it should not use V22.
         else if (Build.VERSION.SDK_INT > 21) {
             return Runtime.is64Bit()
                     ? new ArtMethodV22_64Bit(method)
                     : new ArtMethodV22(method);
         }
-        else {
+        else if (Build.VERSION.SDK_INT == 21) {
+            return Runtime.is64Bit()
+                    ? new ArtMethodV21_64Bit(method)
+                    : new ArtMethodV21(method);
+        } else {
             return new ArtMethodV19(method);
         }
     }

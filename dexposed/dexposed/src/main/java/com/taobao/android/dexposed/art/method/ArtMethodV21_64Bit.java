@@ -14,26 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.taobao.android.dexposed.art.method;
 
 import java.lang.reflect.Method;
 
+public class ArtMethodV21_64Bit extends ArtMethod {
 
-public class ArtMethodV19 extends ArtMethod {
-
-    @FieldMapping(offset = 28)
-    private Field access_flags_;
-
-    @FieldMapping(offset = 40)
-    private Field entry_point_from_compiled_code_;
-
-    @FieldMapping(offset = 44)
+    @FieldMapping(offset = 24, length = 8)
     private Field entry_point_from_interpreter_;
 
-    @FieldMapping(offset = 72)
-    private Field native_method_;
+    @FieldMapping(offset = 32, length = 8)
+    private Field entry_point_from_jni_;
 
-    ArtMethodV19(Method method) {
+    @FieldMapping(offset = 40, length = 8)
+    private Field entry_point_from_quick_compiled_code_;
+
+    @FieldMapping(offset = 56)
+    private Field access_flags_;
+
+    ArtMethodV21_64Bit(Method method) {
         super(method);
     }
 
@@ -44,27 +44,27 @@ public class ArtMethodV19 extends ArtMethod {
 
     @Override
     public void setEntryPointFromInterpreter(long pointer_entry_point_from_interpreter) {
-        entry_point_from_interpreter_.write(pointer_entry_point_from_interpreter);
+        this.entry_point_from_interpreter_.write(pointer_entry_point_from_interpreter);
     }
 
     @Override
     public long getEntryPointFromJni() {
-        return native_method_.readLong();
+        return entry_point_from_jni_.readLong();
     }
 
     @Override
     public void setEntryPointFromJni(long pointer_entry_point_from_jni) {
-        native_method_.write(pointer_entry_point_from_jni);
+        this.entry_point_from_jni_.write(pointer_entry_point_from_jni);
     }
 
     @Override
     public long getEntryPointFromQuickCompiledCode() {
-        return entry_point_from_compiled_code_.readLong();
+        return entry_point_from_quick_compiled_code_.readLong();
     }
 
     @Override
     public void setEntryPointFromQuickCompiledCode(long pointer_entry_point_from_quick_compiled_code) {
-        entry_point_from_compiled_code_.write(pointer_entry_point_from_quick_compiled_code);
+        this.entry_point_from_quick_compiled_code_.write(pointer_entry_point_from_quick_compiled_code);
     }
 
     @Override
